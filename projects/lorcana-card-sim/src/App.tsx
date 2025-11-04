@@ -42,6 +42,11 @@ export default class App extends Component<AppProps, AppState> {
                 <div>
                     <div>
                         <h2>Extra Card Meta</h2>
+                        <p>
+                            Enter a JSON array of extra card meta data (in case there is a new set release,
+                            and the new cards don't show up). Each card must have an Image and Name property,
+                            optionally you can add the Cost property. See the example below.
+                        </p>
                         <div>
                         <textarea defaultValue={DefaultExtraCards} onInput={(e)=>{
                             let text = e.target as HTMLTextAreaElement;
@@ -56,6 +61,16 @@ export default class App extends Component<AppProps, AppState> {
                     </div>
                     <div>
                         <h2>Deck</h2>
+                        <p>
+                            Enter your deck here, in the format of "N NAME - DESCRIPTION". You can copy this
+                            directly from Dreamborn:
+                            <ol>
+                                <li>Click the "Menu" dropdown</li>
+                                <li>Select "Export"</li>
+                                <li>Click "Copy to Clipboard"</li>
+                                <li>Paste the text into the text box below</li>
+                            </ol>
+                        </p>
                         <div>
                         <textarea defaultValue={DefaultDeck} onInput={(e)=>{
                             let text = e.target as HTMLTextAreaElement;
@@ -100,24 +115,28 @@ interface MorseValue {
     matchStart: number | null
 }
 
-const DefaultExtraCards = `[{
+export const DefaultExtraCards = `[{
     "Image": "https://cdn.dreamborn.ink/images/en/cards/010/6405ce4a96abee3111b1e53c28e11fab0d00e8e3",
-    "Name": "Spooky Sight"
+    "Name": "Spooky Sight",
+    "Cost": 6
   },
 {
     "Image": "https://cdn.dreamborn.ink/images/en/cards/010/8d6df8732abe1c376c007171fd4fce0eb5a02ed3",
-    "Name": "He Hurled His Thunderbolt"
+    "Name": "He Hurled His Thunderbolt",
+    "Cost": 4
   },
 {
     "Image": "https://cdn.dreamborn.ink/images/en/cards/010/3a5ef78547ed2f6954cb32d88295da8940f8f03e",
-    "Name": "Goliath - Clan Leader"
+    "Name": "Goliath - Clan Leader",
+    "Cost": 6
   },
 {
     "Image": "https://cdn.dreamborn.ink/images/en/cards/010/cc2a8eec3d007ff60083ce48c2a26394ec7b6253",
-    "Name": "Cinderella - Dream Come True"
+    "Name": "Cinderella - Dream Come True",
+    "Cost": 4
   }]`;
 
-const DefaultDeck = `4 Captain Hook - Forceful Duelist
+export const DefaultDeck = `4 Captain Hook - Forceful Duelist
 4 Mulan - Disguised Soldier
 4 Sail The Azurite Sea
 4 Tipo - Growing Son

@@ -1,4 +1,5 @@
 import {LorcanaCard, LorcanaDeck} from "./LorcanaTypes";
+import {LorcanaLogEntries, LorcanaLogEntry} from "./LorcanaLog";
 
 export default class LorcanaSimulator {
     private readonly deck: LorcanaDeck;
@@ -6,6 +7,10 @@ export default class LorcanaSimulator {
     private readonly allCards: LorcanaCardInstance[];
     private altered: boolean;
     ui: Set<()=>void>;
+
+    private logEntries: LorcanaLogEntry[];
+    private currentTurn: number;
+    private historicalViewIndex: number | null;
 
     constructor(deck: LorcanaDeck) {
         this.deck = deck;
@@ -19,8 +24,33 @@ export default class LorcanaSimulator {
             ui: new Set()
         }));
 
+        this.logEntries = [];
+        this.currentTurn = 1;
+        this.historicalViewIndex = null;
+
         this.ui = new Set();
         this.reset();
+    }
+
+    private log<T extends LorcanaLogEntry>(log: T) {
+        let last = this.logEntries[this.logEntries.length-1];
+        if (last && last.type) {
+            if (last.type == "discard" && log.type == "discard") {
+                last.cards.push(...log.cards);
+            } else if (last.type == "quest" && log.type == "quest") {
+                last.cards.push(...log.cards);
+            } else if (last.type == "quest-end" && log.type == "quest-end") {
+                last.cards.push(...log.cards);
+            } else if (last.type == "ink" && log.type == "ink") {
+                last.cards.push(...log.cards);
+                last.inkLeft = log.inkLeft;
+            } else {
+                this.logEntries.push(log);
+            }
+        } else {
+            this.logEntries.push(log);
+        }
+        this.update();
     }
 
     public getCardsByState(state: CardState | CardState[]) {
@@ -43,8 +73,20 @@ export default class LorcanaSimulator {
         this.altered = false;
 
         for (let i = 0; i < 7; i++) {
-            this.draw();
+            this.draw(false);
         }
+
+        this.logEntries = [];
+        this.currentTurn = 1;
+        this.historicalViewIndex = null;
+
+        let hand = this.getCardsByState("hand");
+
+        this.log({
+            type: "start-game",
+            hand: hand.map(c=>c.card),
+            seed: -1 // TODO
+        });
     }
 
     alter() {
@@ -55,9 +97,18 @@ export default class LorcanaSimulator {
                 card.lastGroupAction = Date.now();
                 card.state = "altered";
             }
+
+            let received: LorcanaCard[] = [];
             for (let i = 0; i < altering.length; i++) {
-                this.draw();
+                let card = this.draw(false);
+                if (!card) break;
+                received.push(card.card);
             }
+            this.log({
+                type: "alter",
+                altered: altering.map(c=>c.card),
+                received: received
+            });
         }
     }
 
@@ -70,12 +121,20 @@ export default class LorcanaSimulator {
         } else if (action == "discard") {
             card.lastGroupAction = Date.now();
             card.state = "discard";
+            this.log({
+                type: "discard",
+                cards: [card.card]
+            });
         } else if (action == "quest") {
             card.state = "quest";
+            this.log({
+                type: "quest",
+                cards: [card.card]
+            });
         } else if (action == "play") {
             let cost = card.card.cost;
             let inkwell = this.getCardsByState("inked");
-            if (inkwell.length >= cost) {
+            if (cost !== null && inkwell.length >= cost) {
                 for (let i = 0; i < cost; i++) {
                     inkwell[i].state = "inked_used";
                     this.updateCard(inkwell[i]);
@@ -83,14 +142,28 @@ export default class LorcanaSimulator {
             }
             card.lastGroupAction = Date.now();
             card.state = "played";
-        } else if (action == "quest_undo") {
+            this.log({
+                type: "play",
+                card: card.card,
+                inkLeft: this.getCardsByState("inked").length
+            });
+        } else if (action == "quest_end") {
             card.state = "played";
+            this.log({
+                type: "quest-end",
+                cards: [card.card]
+            });
         } else if (action == "ink") {
             card.lastGroupAction = Date.now();
             card.state = "inked";
+            this.log({
+                type: "ink",
+                cards: [card.card],
+                inkLeft: this.getCardsByState("inked").length
+            });
         } else if (action == "ink_use") {
             card.state = "inked_used";
-        } else if (action == "ink_undo") {
+        } else if (action == "ink_replenish") {
             card.state = "inked";
         }
         this.updateCard(card);
@@ -99,22 +172,32 @@ export default class LorcanaSimulator {
     nextTurn() {
         for (let card of this.getCardsByState("inked_used")) {
             card.state = "inked";
-            this.updateCard(card)
+            this.updateCard(card);
         }
         for (let card of this.getCardsByState("quest")) {
             card.state = "played";
-            this.updateCard(card)
+            this.updateCard(card);
         }
+        this.currentTurn++;
+        this.log({
+            type: "start-turn",
+            turn: this.currentTurn,
+            inkCount: this.getCardsByState("inked").length
+        });
         this.draw();
     }
 
-    draw() {
+    draw(log=true) {
         let deckCards = this.getCardsByState("deck");
         if (deckCards.length == 0) return null;
         deckCards.sort(()=>Math.random()-0.5);
         let card = deckCards[0];
         card.lastGroupAction = Date.now();
         card.state = "hand";
+        if (log) this.log({
+            type: "draw",
+            cards: [card.card]
+        });
         this.updateCard(card);
         return card;
     }
@@ -147,6 +230,10 @@ export default class LorcanaSimulator {
     hasAltered() {
         return this.altered;
     }
+
+    getLog() {
+        return this.logEntries;
+    }
 }
 export interface LorcanaCardInstance {
     id: number;
@@ -156,16 +243,16 @@ export interface LorcanaCardInstance {
     ui: Set<()=>void>;
 }
 export type CardState = "deck" | "hand" | "discard" | "inked" | "inked_used" | "quest" | "played" | "alter_marked" | "altered";
-export type CardActions = "unmark_alter" | "mark_alter" | "discard" | "quest" | "play" | "ink" | "ink_use" | "ink_undo" | "quest_undo";
+export type CardActions = "unmark_alter" | "mark_alter" | "discard" | "quest" | "play" | "ink" | "ink_use" | "ink_replenish" | "quest_end";
 export const StateToActions: Record<CardState,CardActions[]> = {
     altered: [],
     deck: [],
     discard: [],
     hand: ["mark_alter", "discard", "play", "ink"],
     inked: ["ink_use"],
-    inked_used: ["ink_undo"],
+    inked_used: ["ink_replenish"],
     played: ["quest","discard","ink"],
-    quest: ["quest_undo","ink"],
+    quest: ["quest_end","ink"],
     alter_marked: ["unmark_alter"]
 }
 export const ActionsToName: Record<CardActions,string> = {
@@ -176,6 +263,6 @@ export const ActionsToName: Record<CardActions,string> = {
     play: "Play",
     ink: "Ink",
     ink_use: "Use Ink",
-    ink_undo: "Undo Ink",
-    quest_undo: "Undo Quest"
+    ink_replenish: "Replenish",
+    quest_end: "End Quest"
 }

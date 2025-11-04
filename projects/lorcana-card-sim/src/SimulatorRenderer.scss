@@ -4,38 +4,51 @@
   gap: 10px;
   border: 1px solid black;
   padding: 10px;
-  > ._center {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-
-    justify-content: center;
-    align-items: center;
-  }
-
-  > ._buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-
-    justify-content: center;
-    align-items: center;
-
-    height: fit-content;
-    border: none;
-    button {
-      padding: 10px 20px;
-
-      &._greyed {
-        opacity: 0.5;
-        pointer-events: none;
-      }
-    }
-  }
-  .card-stack {
+  > ._content {
     flex-grow: 1;
-    &._discard {
-      flex-grow: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    > ._play-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+
+      > ._center {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        justify-content: center;
+        align-items: center;
+      }
+
+      > ._buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        justify-content: center;
+        align-items: center;
+
+        height: fit-content;
+        border: none;
+        button {
+          padding: 10px 20px;
+
+          &._greyed {
+            opacity: 0.5;
+            pointer-events: none;
+          }
+        }
+      }
+      .card-stack {
+        flex-grow: 1;
+        &._discard {
+          flex-grow: 0;
+        }
+      }
     }
   }
 }

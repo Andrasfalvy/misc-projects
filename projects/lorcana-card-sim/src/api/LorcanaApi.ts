@@ -1,4 +1,5 @@
 import {LorcanaCard, LorcanaDeck} from "./LorcanaTypes";
+import {LorcanaLogEntry} from "./LorcanaLog";
 
 export default class LorcanaApi {
     private readonly apiCards: LorcanaCard[];
@@ -45,7 +46,7 @@ export default class LorcanaApi {
         try {
             let json = JSON.parse(cardString) as {Name: string, Image: string, Cost?: number}[];
             results.cards.push(...json.map(e=>({
-                cost: e.Cost ?? 0,
+                cost: e.Cost ?? null,
                 name: e.Name,
                 image: e.Image
             })));
