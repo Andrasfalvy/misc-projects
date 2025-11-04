@@ -57,7 +57,7 @@ export default class App extends Component<AppProps, AppState> {
                         <div>
                         <textarea defaultValue={DefaultDeck} onInput={(e)=>{
                             let text = e.target as HTMLTextAreaElement;
-                            api.setExtraCards(text.value);
+                            api.parseDeck(text.value);
                             this.resetSim();
                         }}/>
                             <div>
@@ -65,14 +65,14 @@ export default class App extends Component<AppProps, AppState> {
                                 {
                                     api.getDeckParseResults().missing.length == 0
                                         ? <p>All deck cards were imported successfully.</p>
-                                        : <p>
-                                            The following cards were not found:
+                                        : <>
+                                            <p>The following cards were not found:</p>
                                             <ul>
                                                 {api.getDeckParseResults().missing.map((card, i)=>{
                                                     return <li key={i+""}>{card}</li>;
                                                 })}
                                             </ul>
-                                        </p>
+                                        </>
                                 }
                             </div>
                         </div>

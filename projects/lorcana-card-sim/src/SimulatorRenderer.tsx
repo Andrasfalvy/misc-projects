@@ -44,7 +44,7 @@ export default class SimulatorRenderer extends Component<SimulatorRendererProps,
             </div>
             <div className="_buttons">
                 <button className={"_alter " + (sim.hasAltered() || !hasAlterCards ? "_greyed" : "_usable")} onClick={()=>{sim.alter()}}>{sim.hasAltered() ? "Already altered" : hasAlterCards ? "Alter" : "Mark cards to Alter"}</button>
-                <button className="_reset" onClick={()=>{sim.reset()}}>Reset</button>
+                <button className="_reset" onClick={()=>{sim.reset();this.forceUpdate();}}>Reset</button>
                 <button className={"_draw " + (remainingCards <= 0 ? "_greyed" : "_usable")} onClick={()=>{sim.draw()}}>Draw ({remainingCards + (remainingCards == 1 ? " card" : " cards")} in deck)</button>
                 <button className="_nextTurn" onClick={()=>{sim.nextTurn()}}>Next Turn</button>
             </div>

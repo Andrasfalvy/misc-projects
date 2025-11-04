@@ -98,6 +98,7 @@ export default class LorcanaSimulator {
 
     draw() {
         let deckCards = this.getCardsByState("deck");
+        if (deckCards.length == 0) return null;
         deckCards.sort(()=>Math.random()-0.5);
         let card = deckCards[0];
         card.lastGroupAction = Date.now();
