@@ -2,23 +2,28 @@ import {LorcanaCard, LorcanaDeck} from "./LorcanaTypes";
 
 export default class LorcanaApi {
     private readonly apiCards: LorcanaCard[];
-    private readonly extraCards: LorcanaCard[];
+    private extraCardsResults: ExtraCardsResults;
     private deckParseResults: DeckParseResults;
-    private uiHandler: (api: LorcanaApi)=>void;
+    private uiHandler: Set<(api: LorcanaApi)=>void>;
     constructor() {
         this.apiCards = [];
-        this.extraCards = [];
+        this.extraCardsResults = {
+            string: "[]",
+            cards: [],
+            error: null
+        };
         this.deckParseResults = {
+            string: "",
             deck: {
                 cards: []
             },
             missing: []
         };
-        this.uiHandler = ()=>{};
+        this.uiHandler = new Set();
     }
 
     public randomCard() {
-        let all = [...this.apiCards, ...this.extraCards];
+        let all = [...this.apiCards, ...this.extraCardsResults.cards];
         return all[Math.floor(Math.random()*all.length)];
     }
 
@@ -30,25 +35,38 @@ export default class LorcanaApi {
         })));
         return this.apiCards;
     }
-    public setExtraCards(cardString: string) {
-        this.extraCards.splice(0, this.extraCards.length);
-        let json = JSON.parse(cardString) as {Name: string, Image: string}[];
-        this.extraCards.push(...json.map(e=>({
-            name: e.Name,
-            image: e.Image
-        })));
+    public setExtraCards(cardString: string): ExtraCardsResults {
+        let results: ExtraCardsResults = {
+            string: cardString,
+            cards: [],
+            error: null
+        };
+        try {
+            let json = JSON.parse(cardString) as {Name: string, Image: string}[];
+            results.cards.push(...json.map(e=>({
+                name: e.Name,
+                image: e.Image
+            })));
+        } catch (e) {
+            results.error = "Invalid JSON: " + e;
+        }
+        this.extraCardsResults = results;
+        this.parseDeck(this.deckParseResults.string);
+        this.updateUi();
+        return results;
     }
 
     private findCard(name: string) {
         let card = this.apiCards.find(e=>e.name.toLowerCase() == name.toLowerCase());
         if (!card) {
-            card = this.extraCards.find(e=>e.name.toLowerCase() == name.toLowerCase());
+            card = this.extraCardsResults.cards.find(e=>e.name.toLowerCase() == name.toLowerCase());
         }
         return card;
     }
 
     public parseDeck(deckString: string): DeckParseResults {
         let results: DeckParseResults = {
+            string: deckString,
             deck: {
                 cards: []
             },
@@ -74,18 +92,32 @@ export default class LorcanaApi {
         return results;
     }
 
-    setUiHandler(handler: (api: LorcanaApi)=>void) {
-        this.uiHandler = handler;
+    addUiHandler(handler: (api: LorcanaApi)=>void) {
+        this.uiHandler.add(handler);
+    }
+    removeUiHandler(handler: (api: LorcanaApi)=>void) {
+        this.uiHandler.delete(handler);
     }
     updateUi() {
-        this.uiHandler(this);
+        for (let handler of this.uiHandler) {
+            handler(this);
+        }
     }
 
     getDeckParseResults() {
         return this.deckParseResults;
     }
+    getExtraCardsResults() {
+        return this.extraCardsResults;
+    }
+}
+interface ExtraCardsResults {
+    string: string;
+    cards: LorcanaCard[];
+    error: string | null;
 }
 interface DeckParseResults {
+    string: string;
     deck: LorcanaDeck;
     missing: string[];
 }

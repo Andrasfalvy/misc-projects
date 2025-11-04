@@ -15,10 +15,10 @@ export default class CardRenderer extends Component<CardRendererProps> {
     }
 
     componentDidMount() {
-        this.props.card.ui.push(this.handler);
+        this.props.card.ui.add(this.handler);
     }
     componentWillUnmount() {
-        this.props.card.ui.splice(this.props.card.ui.indexOf(this.handler), 1);
+        this.props.card.ui.delete(this.handler);
     }
 
     render() {

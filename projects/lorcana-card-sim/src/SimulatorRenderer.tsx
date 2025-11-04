@@ -16,10 +16,10 @@ export default class SimulatorRenderer extends Component<SimulatorRendererProps,
     }
 
     componentDidMount() {
-        this.props.simulator.ui.push(this.handler);
+        this.props.simulator.ui.add(this.handler);
     }
     componentWillUnmount() {
-        this.props.simulator.ui.splice(this.props.simulator.ui.indexOf(this.handler), 1);
+        this.props.simulator.ui.delete(this.handler);
     }
 
     render() {
@@ -27,6 +27,7 @@ export default class SimulatorRenderer extends Component<SimulatorRendererProps,
         let hasAlterCards = sim.getCardsByState("alter_marked").length > 0;
         let remainingCards = sim.cardsInDeckCount();
         return <div className="simulator">
+            <h1>Simulator</h1>
             <div className="_cards _played">
                 {sim.getCardsByState(["played", "quest"]).map((card, i)=><CardRenderer card={card} simulator={sim} key={i}/>)}
             </div>

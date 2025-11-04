@@ -5,7 +5,7 @@ export default class LorcanaSimulator {
 
     private readonly allCards: LorcanaCardInstance[];
     private altered: boolean;
-    ui: (()=>void)[];
+    ui: Set<()=>void>;
 
     constructor(deck: LorcanaDeck) {
         this.deck = deck;
@@ -16,10 +16,10 @@ export default class LorcanaSimulator {
             state: "deck",
             card: e,
             lastGroupAction: -1,
-            ui: []
+            ui: new Set()
         }));
 
-        this.ui = [];
+        this.ui = new Set();
         this.reset();
     }
 
@@ -140,7 +140,7 @@ export interface LorcanaCardInstance {
     state: CardState;
     card: LorcanaCard;
     lastGroupAction: number;
-    ui: (()=>void)[];
+    ui: Set<()=>void>;
 }
 export type CardState = "deck" | "hand" | "discard" | "inked" | "inked_used" | "quest" | "played" | "alter_marked" | "altered";
 export type CardActions = "unmark_alter" | "mark_alter" | "discard" | "quest" | "play" | "ink" | "ink_use";
