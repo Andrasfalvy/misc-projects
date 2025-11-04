@@ -55,10 +55,6 @@ export function webpackConfigPreset(root=false) {
                     type: 'asset/source'
                 },
                 {
-                    test: /\.json$/i,
-                    type: 'asset/source',
-                },
-                {
                     test: /\.s[ac]ss$/i,
                     use: [
                         // Creates `style` nodes from JS strings
@@ -84,6 +80,9 @@ export function webpackConfigPreset(root=false) {
             new HtmlWebpackPlugin({
                 template: "../common/index.html",
                 publicPath: `./`,
+                templateParameters: {
+                    title: "Fun Projects",
+                },
                 filename: "./index.html",
                 //favicon: "../../common/favicon.ico"
             }),

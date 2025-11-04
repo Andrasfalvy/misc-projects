@@ -1,1 +1,20 @@
-[]
+[
+    {
+        "id": "test-project-1",
+        "name": "Testing Project",
+        "shortDescription": "An example project to test out the index website",
+        "image": "https://picsum.photos/800/400?random=1"
+    },
+    {
+        "id": "test-project-2",
+        "name": "Another Test Project",
+        "shortDescription": "Another project",
+        "image": "https://picsum.photos/800/400?random=2"
+    },
+    {
+        "id": "test-project-3",
+        "name": "Surprise Third Project",
+        "shortDescription": "A third project that is also used for testing",
+        "image": "https://picsum.photos/800/400?random=3"
+    }
+]

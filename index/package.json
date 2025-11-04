@@ -1,7 +1,5 @@
 {
-  "name": "red-circle-generator",
-  "displayName": "Red Circle Generator",
-  "description": "An app to generate images with red circles pointing to other things",
+  "name": "fun-projects",
   "private": true,
   "version": "0.1.0",
   "license": "LGPL-3.0-or-later",

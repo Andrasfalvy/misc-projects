@@ -7,12 +7,8 @@ let projects = projectFolders.map(dir=>{
         id: dir.name,
         name: packageJson.displayName,
         shortDescription: packageJson.description,
-        image: "/" + dir.name + "/thumbnail.png"
+        image: "./" + dir.name + "/thumbnail.png"
     };
 });
 
 fs.writeFileSync("./index/src/projects.json", JSON.stringify(projects, null, 4));
-
-let packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
-packageJson.workspaces = projectFolders.map(e=>"./projects/" + e.name);
-fs.writeFileSync("./package.json", JSON.stringify(packageJson, null, 4));
