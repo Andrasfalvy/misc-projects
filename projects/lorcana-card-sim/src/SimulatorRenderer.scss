@@ -1,0 +1,67 @@
+.simulator {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  > div {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+    align-items: center;
+  }
+
+  > ._buttons {
+    height: fit-content;
+    border: none;
+    button {
+      padding: 10px 20px;
+
+      &._greyed {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
+  }
+  ._cards {
+    min-height: 300px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  > ._center {
+    border: none;
+    padding: 0;
+    min-height: 320px;
+    height: max-content;
+    > div {
+      border: 1px solid black;
+    }
+    > ._inkwell {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+    }
+    > ._discard {
+      position: relative;
+      min-width: 218px;
+      min-height: 300px;
+      padding: 10px;
+      > .card {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+      }
+    }
+  }
+}

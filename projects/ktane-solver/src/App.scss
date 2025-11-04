@@ -1,0 +1,38 @@
+.possibles {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-x: scroll;
+  max-width: 100%;
+  > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: 10px;
+
+    min-width: max-content;
+    > div {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      span.match {
+        color: green;
+        text-decoration: underline green;
+        text-decoration-thickness: 3px;
+      }
+    }
+  }
+}
+.inputs {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: 10px;
+  }
+}

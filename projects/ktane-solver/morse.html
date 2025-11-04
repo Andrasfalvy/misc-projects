@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Morse Solver</title>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<script>
+    function morseToText(value) {
+        return value ? "▬" : "•";
+    }
+    let morseValues = {
+        a: [false, true],
+        b: [true,  false, false, false],
+        c: [true,  false, true,  false],
+        d: [true,  false, false],
+        e: [false],
+        f: [false, false, true,  false],
+        g: [true,  true,  false],
+        h: [false, false, false, false],
+        i: [false, false],
+        j: [false, true,  true,  true],
+        k: [true,  false, true],
+        l: [false, true,  false, false],
+        m: [true,  true],
+        n: [true,  false],
+        o: [true,  true,  true],
+        p: [false, true,  true,  false],
+        q: [true,  true,  false, true],
+        r: [false, true,  false],
+        s: [false, false, false],
+        t: [true],
+        u: [false, false, true],
+        v: [false, false, false, true],
+        w: [false, true,  true],
+        x: [true,  false, false, true],
+        y: [true,  false, true,  true],
+        z: [true,  true,  false, false],
+
+        0: [true,  true,  true,  true,  true ],
+        1: [false, true,  true,  true,  true ],
+        2: [false, false, true,  true,  true ],
+        3: [false, false, false, true,  true ],
+        4: [false, false, false, false, true ],
+        5: [false, false, false, false, false],
+        6: [true,  false, false, false, false],
+        7: [true,  true,  false, false, false],
+        8: [true,  true,  true,  false, false],
+        9: [true,  true,  true,  true,  false]
+    };
+    let presets = {
+        en: "shell 3.505\nhalls 3.515\nslick 3.522\ntrick 3.532\nboxes 3.535\nleaks 3.542\nstrobe 3.545\nbistro 3.552\nflick 3.555\nbombs 3.565\nbreak 3.572\nbrick 3.575\nsteak 3.582\nsting 3.592\nvector 3.595\nbeats 3.600"
+    };
+
+    let wordsArea = document.getElementById("words");
+    function applyPreset(lang) {
+        wordsArea.value = presets[lang];
+    }
+    let loadedWords = [];
+    function updateWords() {
+        let raw = wordsArea.value;
+        loadedWords = raw.split("\n").map(e=>e.split("\t")).map(e=>{
+            let morse = [...e[0]].map(c=>morseValues[c]);
+            return [0, e[0], morse, [...morse, ...morse, ...morse, ...morse, ...morse].flat(), e[1]]
+        });
+        resetSolver();
+        updateCurrentInput();
+    }
+    let morseInput = [];
+    function inputShort() {
+        morseInput.push(false);
+        updateCurrentInput();
+        solve();
+    }
+    function inputLong() {
+        morseInput.push(true);
+        updateCurrentInput();
+        solve();
+    }
+    function inputClear() {
+        morseInput = [];
+        resetSolver();
+        updateCurrentInput();
+    }
+
+    // Input
+    let inputsDiv = document.getElementById("inputs");
+    function updateCurrentInput() {
+        while (inputsDiv.firstChild) {
+            inputsDiv.removeChild(inputsDiv.lastChild);
+        }
+        for (let input of morseInput) {
+            let div = document.createElement("div");
+
+            let text = document.createElement("b");
+            text.textContent = input ? "Long" : "Short";
+            div.appendChild(text);
+
+            let p = document.createElement("p");
+            p.textContent = morseToText(input);
+            div.appendChild(p);
+
+            inputsDiv.appendChild(div);
+        }
+    }
+
+    // Solver
+    let possibleValues = [];
+    function resetSolver() {
+        possibleValues = [...loadedWords];
+        updatePossibles();
+    }
+    function solve() {
+        if (morseInput.length === 0) {
+            resetSolver();
+        }
+
+        let l = possibleValues.length - 1;
+        for (let i = l; i >= 0; i--) {
+            let current = possibleValues[i];
+            let index = listIncludes(current[3], morseInput);
+            if (index == -1) {
+                possibleValues.splice(i,1);
+            } else {
+                current[0] = index;
+            }
+        }
+        updatePossibles();
+    }
+    function listIncludes(parent, child) {
+        outer: for (let startIndex = 0; startIndex < parent.length; startIndex++) {
+            for (let i = 0; i < child.length; i++) {
+                if (parent[startIndex+i] !== child[i]) continue outer;
+            }
+            return startIndex;
+        }
+        return -1;
+    }
+
+
+    // Possibles
+    let possiblesDiv = document.getElementById("possibles");
+    let possibleCountSpan = document.getElementById("possible_count");
+    let possibleMaxSpan = document.getElementById("possible_max");
+
+    function updatePossibles() {
+        while (possiblesDiv.firstChild) {
+            possiblesDiv.removeChild(possiblesDiv.lastChild);
+        }
+        possibleCountSpan.textContent = possibleValues.length+"";
+        possibleMaxSpan.textContent = loadedWords.length+"";
+        for (let [startIndex, word, morse, morseMany, frequency] of possibleValues) {
+            let div = document.createElement("div");
+
+            let text = document.createElement("b");
+            text.textContent = word;
+            div.appendChild(text);
+
+            let ranges = [];
+
+            let morseLength = [].flat().length;
+
+            if (startIndex+morseInput.length < morseLength) {
+                ranges.push([startIndex, startIndex+morseInput.length]);
+            } else {
+                ranges.push([startIndex, morseLength]);
+                ranges.push([0, (startIndex+morseInput.length) % morseLength]);
+            }
+
+            div.appendChild(morse.map((letter,letterIndex)=>letter.map(morseToText).map((e,charBitIndex)=>{
+                let span = document.createElement("span");
+                let currentTotalIndex = morse.slice(0,letterIndex).flat().length + charBitIndex;
+                for (let range of ranges) {
+                    console.log(range[0], range[1], currentTotalIndex, range[0] <= currentTotalIndex && currentTotalIndex < range[1]);
+                    if (range[0] <= currentTotalIndex && currentTotalIndex < range[1]) {
+                        span.classList.add("match");
+                        break;
+                    }
+                }
+                span.textContent = e;
+                return span;
+            }).reduce((acc,e)=>{
+                acc.appendChild(e);
+                return acc;
+            }, document.createElement("div"))).reduce((acc,e)=>{
+                acc.appendChild(e);
+                return acc;
+            }, document.createElement("div")));
+
+            let p = document.createElement("p");
+            p.textContent = frequency;
+            div.appendChild(p);
+
+            possiblesDiv.appendChild(div);
+        }
+    }
+
+
+    applyPreset("en");
+    updateWords();
+    updatePossibles();
+</script>
+</body>
+</html>

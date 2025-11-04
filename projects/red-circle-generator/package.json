@@ -1,0 +1,17 @@
+{
+  "name": "red-circle-generator",
+  "displayName": "Red Circle Generator",
+  "description": "An app to generate images with red circles pointing to other things",
+  "private": true,
+  "version": "0.1.0",
+  "license": "LGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrgazdag/fun.git"
+  },
+  "scripts": {
+    "build": "webpack build",
+    "watch": "webpack watch --mode development",
+    "start": "tsx scripts/host.ts"
+  }
+}
