@@ -2,6 +2,7 @@ import "./CardRenderer.scss";
 import React from "react";
 import LorcanaSimulator, {ActionsToName, LorcanaCardInstance, StateToActions} from "./api/LorcanaSimulator";
 import {Component} from "react";
+import AsyncImage from "../../../common/AsyncImage";
 
 export default class CardRenderer extends Component<CardRendererProps> {
 
@@ -30,7 +31,7 @@ export default class CardRenderer extends Component<CardRendererProps> {
                 })}
             </div>
             <div className="_front">
-                <img src={this.props.card.card.image} alt={this.props.card.card.name + " (front)"}/>
+                <AsyncImage src={this.props.card.card.api.getImage(this.props.card.card.image)} alt={this.props.card.card.name + " (front)"}/>
             </div>
             <div className="_back">
                 <img src="https://wiki.mushureport.com/images/thumb/d/d7/Card_Back_official.png/300px-Card_Back_official.png" alt={this.props.card.card.name + " (back)"}/>

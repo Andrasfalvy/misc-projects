@@ -16,26 +16,29 @@
     min-height: 280px;
     flex-grow: 1;
     display: flex;
-    gap: 10px;
     align-items: center;
     justify-content: center;
+    ._cards_inner {
+      display: flex;
+      gap: 10px;
+    }
   }
   &._type-horizontal {
-    ._cards {
+    ._cards_inner {
       flex-direction: row;
       overflow-x: auto;
       overflow-y: hidden;
     }
   }
   &._type-vertical {
-    ._cards {
+    ._cards_inner {
       flex-direction: column;
       overflow-x: hidden;
       overflow-y: auto;
     }
   }
   &._type-stack {
-    ._cards {
+    ._cards_inner {
       position: relative;
       .card:not(:first-child) {
         position: absolute;

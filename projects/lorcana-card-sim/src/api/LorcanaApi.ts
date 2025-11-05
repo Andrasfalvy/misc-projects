@@ -1,13 +1,15 @@
 import {LorcanaCard, LorcanaDeck} from "./LorcanaTypes";
-import {LorcanaLogEntry} from "./LorcanaLog";
+import ImageCache from "../../../../common/ImageCache";
 
 export default class LorcanaApi {
     private readonly apiCards: LorcanaCard[];
+    private readonly imageCache: ImageCache;
     private extraCardsResults: ExtraCardsResults;
     private deckParseResults: DeckParseResults;
     private uiHandler: Set<(api: LorcanaApi)=>void>;
     constructor() {
         this.apiCards = [];
+        this.imageCache = new ImageCache();
         this.extraCardsResults = {
             string: "[]",
             cards: [],
@@ -23,6 +25,10 @@ export default class LorcanaApi {
         this.uiHandler = new Set();
     }
 
+    public async getImage(url: string): Promise<string> {
+        return this.imageCache.getImage(url);
+    }
+
     public randomCard() {
         let all = [...this.apiCards, ...this.extraCardsResults.cards];
         return all[Math.floor(Math.random()*all.length)];
@@ -31,6 +37,7 @@ export default class LorcanaApi {
     public async getApiCards(): Promise<LorcanaCard[]> {
         let json = await (await fetch("https://api.lorcana-api.com/bulk/cards")).json() as {Name: string, Image: string, Cost: number}[];
         this.apiCards.push(...json.map(e=>({
+            api: this,
             name: e.Name,
             image: e.Image,
             cost: e.Cost
@@ -46,6 +53,7 @@ export default class LorcanaApi {
         try {
             let json = JSON.parse(cardString) as {Name: string, Image: string, Cost?: number}[];
             results.cards.push(...json.map(e=>({
+                api: this,
                 cost: e.Cost ?? null,
                 name: e.Name,
                 image: e.Image

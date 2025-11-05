@@ -1,0 +1,33 @@
+.async-image {
+  position: relative;
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .spinner {
+    width: 24px;
+    height: 24px;
+    opacity: 0;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    visibility: visible;
+  }
+
+  &._loaded {
+    img {
+      opacity: 1;
+    }
+    .spinner {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+}
