@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import LorcanaSimulator, {LorcanaCardInstance} from "./api/LorcanaSimulator";
 import CardRenderer from "./CardRenderer";
 import "./CardStackRenderer.scss";
+import { motion } from "framer-motion";
 
 export default class CardStackRenderer extends Component<CardStackRendererProps> {
     render() {
@@ -10,11 +11,11 @@ export default class CardStackRenderer extends Component<CardStackRendererProps>
         if (this.props.className) className += " " + this.props.className;
         return <div className={className}>
             {this.props.title ? <h2>{this.props.title}</h2> : null}
-            <div className="_cards">
-                <div className="_cards_inner">
+            <motion.div layoutScroll layout className="_cards">
+                <motion.div layoutScroll layout className="_cards_inner">
                     {this.props.cards.map(card=><CardRenderer card={card} simulator={this.props.simulator} key={card.id}/>)}
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>;
     }
 }

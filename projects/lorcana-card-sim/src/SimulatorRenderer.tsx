@@ -5,6 +5,7 @@ import {Component} from "react";
 import CardRenderer from "./CardRenderer";
 import CardStackRenderer from "./CardStackRenderer";
 import LogRenderer from "./LogRenderer";
+import { motion } from "framer-motion";
 
 export default class SimulatorRenderer extends Component<SimulatorRendererProps, any> {
 
@@ -37,7 +38,7 @@ export default class SimulatorRenderer extends Component<SimulatorRendererProps,
 
         return <div className="simulator">
             <h1>Simulator</h1>
-            <div className="_content">
+            <motion.div layout className="_content">
                 <LogRenderer simulator={this.props.simulator}/>
                 <div className="_play-area">
                     <CardStackRenderer simulator={this.props.simulator}
@@ -66,7 +67,7 @@ export default class SimulatorRenderer extends Component<SimulatorRendererProps,
                         <button className="_nextTurn" onClick={()=>{sim.nextTurn()}}>Next Turn</button>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     }
 }

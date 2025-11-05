@@ -30,9 +30,12 @@
         "ts-loader": "^9.5.2",
         "tsx": "^4.19.4",
         "typescript": "^5.0.0",
-        "wrangler": "^4.45.0",
         "webpack": "^5.90.3",
         "webpack-cli": "^5.1.4",
-        "webpack-define-config": "^0.0.1"
+        "webpack-define-config": "^0.0.1",
+        "wrangler": "^4.45.0"
+    },
+    "dependencies": {
+        "framer-motion": "^12.23.24"
     }
 }
