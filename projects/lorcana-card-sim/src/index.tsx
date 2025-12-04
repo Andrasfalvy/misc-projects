@@ -4,7 +4,7 @@ import App, {DefaultDeck, DefaultExtraCards} from "./App";
 import {createRoot} from "react-dom/client";
 import React from "react";
 import LorcanaApi from "./api/LorcanaApi";
-import Loader from "../../../common/Loader";
+import Loader from "../../../common/components/Loader";
 
 (async ()=>{
     let api = new LorcanaApi();

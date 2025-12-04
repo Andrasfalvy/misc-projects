@@ -2,7 +2,7 @@ import Track from "./Track";
 import {SerializedTrack} from "./SerializedData";
 import Car from "./Car";
 import Leaderboard from "./Leaderboard";
-import {RenderContext} from "../../../../common/CanvasRenderer";
+import {RenderContext} from "../../../../common/components/CanvasRenderer";
 
 export default class Game {
     private static readonly carSpeed = 0.002;

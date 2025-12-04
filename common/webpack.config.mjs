@@ -18,7 +18,7 @@ export function webpackConfigPreset(root=false) {
             path: path.resolve(root ? `../dist/` : `../../dist/${projectName}/`),
             filename: `[name]-[contenthash].js`,
             assetModuleFilename: '[hash][ext][query]',
-            publicPath: root ? `/` : `/${projectName}/`,
+            publicPath: './',
         },
 
         module: {
@@ -53,7 +53,7 @@ export function webpackConfigPreset(root=false) {
                 },
                 {
                     test: /\.(glsl|vsh|fsh)$/i,
-                    type: 'asset/source'
+                    use: ['raw-loader', 'webpack-lygia-loader']
                 },
                 {
                     test: /\.s[ac]ss$/i,

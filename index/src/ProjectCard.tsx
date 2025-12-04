@@ -1,6 +1,6 @@
 import ProjectData from "./ProjectData";
 import React, {Component} from "react";
-import Spinner from "../../common/Spinner";
+import Spinner from "../../common/components/Spinner";
 import "./ProjectCard.scss";
 
 export default class ProjectCard extends Component<ProjectCardProps, ProjectCardState> {

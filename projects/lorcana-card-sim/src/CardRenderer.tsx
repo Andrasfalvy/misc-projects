@@ -2,7 +2,7 @@ import "./CardRenderer.scss";
 import React from "react";
 import LorcanaSimulator, {ActionsToName, LorcanaCardInstance, StateToActions} from "./api/LorcanaSimulator";
 import {Component} from "react";
-import AsyncImage from "../../../common/AsyncImage";
+import AsyncImage from "../../../common/components/AsyncImage";
 import {motion} from "framer-motion";
 
 export default class CardRenderer extends Component<CardRendererProps> {

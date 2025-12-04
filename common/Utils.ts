@@ -47,4 +47,19 @@ export default class Utils {
     public static interpolate(from: number, to: number, percentage: number) {
         return from + (to - from) * percentage;
     }
+
+    public static loadImage(src: string): Promise<HTMLImageElement> {
+        return new Promise((resolve, reject)=>{
+            let img = new Image();
+            img.onload = ()=>{
+                resolve(img);
+            };
+            img.onerror = reject;
+            img.src = src;
+        });
+    }
+
+    static clamp(value: number, min: number, max: number) {
+        return Math.min(Math.max(value, min), max);
+    }
 }

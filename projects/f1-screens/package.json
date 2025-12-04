@@ -1,0 +1,17 @@
+{
+  "name": "f1-screens",
+  "displayName": "F1 Screens",
+  "description": "An app that renders F1 match data for a custom racing league",
+  "private": true,
+  "version": "0.1.0",
+  "license": "LGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrgazdag/misc-projects.git"
+  },
+  "scripts": {
+    "build": "webpack build",
+    "watch": "webpack watch --mode development",
+    "start": "tsx scripts/host.ts"
+  }
+}

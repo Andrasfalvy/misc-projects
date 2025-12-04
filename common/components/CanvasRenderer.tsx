@@ -30,30 +30,29 @@ export default class CanvasRenderer extends Component<CanvasRendererProps> {
     componentDidMount() {
         window.addEventListener("resize", this.resizeHandler);
         this.onResize();
-    }
 
-    componentWillUnmount() {
-        if (this.animFrame !== null) cancelAnimationFrame(this.animFrame);
-        this.animFrame = null;
-        window.removeEventListener("resize", this.resizeHandler);
-    }
-
-    render() {
-        if (this.animFrame !== null) {
-            cancelAnimationFrame(this.animFrame);
-        }
         let renderer = ()=>{
             let canvas = this.canvasRef.current!;
             if (this.ctx == null) {
                 this.ctx = {
-                    ctx: canvas.getContext("2d")!,
+                    ctx: canvas.getContext(this.props.type ?? "2d")!,
                     pointers: new Map()
                 }
             }
-            this.props.renderFunc(this.ctx);
+            (this.props.renderFunc as unknown as (ctx: RenderContext)=>void)(this.ctx);
             this.animFrame = requestAnimationFrame(renderer);
         };
         this.animFrame = requestAnimationFrame(renderer);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resizeHandler);
+
+        if (this.animFrame !== null) cancelAnimationFrame(this.animFrame);
+        this.animFrame = null;
+    }
+
+    render() {
         return <div className="canvas-renderer">
             <div ref={this.canvasDivRef} className="_canvas">
             </div>
@@ -71,10 +70,25 @@ export default class CanvasRenderer extends Component<CanvasRendererProps> {
         </div>;
     }
 }
-interface CanvasRendererProps {
-    renderFunc: (ctx: RenderContext) => void;
+type CanvasRendererProps = {
+    type?: "2d",
+    options?: CanvasRenderingContext2DSettings,
+    renderFunc: (ctx: RenderContext<CanvasRenderingContext2D>)=>void
+} | {
+    type: "bitmaprenderer",
+    options?: ImageBitmapRenderingContextSettings,
+    renderFunc: (ctx: RenderContext<ImageBitmapRenderingContext>)=>void
+} | {
+    type: "webgl",
+    options?: WebGLContextAttributes,
+    renderFunc: (ctx: RenderContext<WebGLRenderingContext>)=>void
+} | {
+    type: "webgl2",
+    options?: WebGLContextAttributes,
+    renderFunc: (ctx: RenderContext<WebGL2RenderingContext>)=>void;
 }
-export interface RenderContext {
+type CanvasContext = CanvasRenderingContext2D | ImageBitmapRenderingContext | WebGLRenderingContext | WebGL2RenderingContext;
+export interface RenderContext<T extends CanvasContext=CanvasContext> {
     pointers: Map<number, React.PointerEvent>;
-    ctx: CanvasRenderingContext2D;
+    ctx: T;
 }

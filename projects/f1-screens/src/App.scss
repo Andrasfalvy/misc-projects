@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'Formula1';
+  font-weight: 400;
+  src: url('./fonts/Formula1-Regular.otf') format('opentype');
+}
+@font-face {
+  font-family: 'Formula1';
+  font-weight: 700;
+  src: url('./fonts/Formula1-Bold.otf') format('opentype');
+}
+body {
+  margin: 0px;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  .canvas-renderer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    touch-action: none;
+  }
+  div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    font-size: 400px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    color: red;
+    overflow: hidden;
+    user-select: none;
+  }
+}

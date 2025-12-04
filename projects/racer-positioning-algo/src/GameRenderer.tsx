@@ -1,7 +1,7 @@
 import Game from "./api/Game";
 import React, {Component} from "react";
 import "./GameRenderer.scss";
-import CanvasRenderer from "../../../common/CanvasRenderer";
+import CanvasRenderer from "../../../common/components/CanvasRenderer";
 
 export default class GameRenderer extends Component<GameRendererProps> {
     constructor(props: GameRendererProps) {
