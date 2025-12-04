@@ -15,6 +15,7 @@ uniform float textureDuration;
 out vec2 CornerPos;
 
 #include "./utils/utils.glsl"
+#include "./utils/constants.glsl"
 
 void main() {
     vec2 zeroToOne = CornerPosition/2. + 0.5;
@@ -25,15 +26,17 @@ void main() {
     txSize /= iResolution; // Into 0 -> 1
     txSize /= 2.; // Into -1 -> 1
 
-    vec2 padding = (vec2(100., 20.)/iResolution)*2.; // -1 -> 1
+    vec2 padding = (GLOBAL_MARGIN/iResolution)*2.; // -1 -> 1
+    float top = 1. - padding.y;
+    float bottom = top - (HEADER_HEIGHT/iResolution.y)*2.;
 
     vec2 centerPos = vec2(0,0);
     switch (int(round(corner))) {
         // Would divide by 2 to get center pos, then multiply by 2 for -1 -> 1
-        case 0: centerPos = vec2(-1. + padding.x + txSize.x,    1. - padding.y - txSize.y); break;
-        case 1: centerPos = vec2(-1. + padding.x + txSize.x,   -1. + padding.y + txSize.y); break;
-        case 2: centerPos = vec2( 1. - padding.x - txSize.x,   -1. + padding.y + txSize.y); break;
-        case 3: centerPos = vec2( 1. - padding.x - txSize.x,    1. - padding.y - txSize.y); break;
+        case 0: centerPos = vec2(-1. + padding.x + txSize.x,   top    - txSize.y); break;
+        case 1: centerPos = vec2(-1. + padding.x + txSize.x,   bottom + txSize.y); break;
+        case 2: centerPos = vec2( 1. - padding.x - txSize.x,   bottom + txSize.y); break;
+        case 3: centerPos = vec2( 1. - padding.x - txSize.x,   top    - txSize.y); break;
     }
 
     vec2 vertexPos = CornerPosition * txSize;

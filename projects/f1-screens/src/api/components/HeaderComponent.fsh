@@ -14,11 +14,10 @@ uniform sampler2D textureTo;
 uniform float textureDelta;
 uniform float textureDuration;
 
-#define COLOR ivec3(200,200,200)
-
 #include "lygia/animation/easing/cubic.glsl"
 #include "./utils/utils.glsl"
 #include "./utils/animation.glsl"
+#include "./utils/constants.glsl"
 
 float fadeInModeTime() {
     bool fromZero = roughly(mode[0], 0.);
@@ -61,7 +60,7 @@ vec4 image(vec2 fragCoord) {
     if (left) mask = uv.x > alpha ? 0. : 1.;
     else mask = uv.x < 1.-alpha ? 0. : 1.;
 
-    return texel * vec4(vec3(COLOR)/255., mask);
+    return texel * vec4(vec3(HEADER_COLOR)/255., mask);
 }
 void main()
 {

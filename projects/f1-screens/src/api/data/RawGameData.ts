@@ -13,12 +13,12 @@ export interface RawRaceResultsData {
         playerId: string,
         teamId: string,
 
-        startingPosition: number,
-        numberOfPitStops: number,
-        bestLapTime: number,
+        startingPosition: number | null,
+        numberOfPitStops: number | null,
+        bestLapTime: number | null,
 
-        time: number | "did_not_finish" | "did_not_start" | "disqualified",
-        timeType: "finish" | "from_leader" | "none",
+        time: number | null,
+        timeType: "finish" | "from_leader" | "lapped" | "did_not_finish" | "did_not_start" | "disqualified",
         penaltyTime: number
     }[]
 }

@@ -46,3 +46,6 @@ vec2 rotateAround(vec2 p, vec2 center, float angle) {
     p += center;
     return p;
 }
+bool roughly(float toTest, float target) {
+    return abs(toTest-target) < 0.0001;
+}

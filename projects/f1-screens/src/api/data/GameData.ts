@@ -86,6 +86,9 @@ export default class GameData {
             let driverData = raceResults.getDriverData(driver);
             if (driverData == null) continue;
 
+            // Only count points when actually finished
+            if (typeof driverData.time !== "number") continue;
+
             result.points += driverData.points;
             if (driverData.finishingPosition == 1) {
                 result.firsts++;

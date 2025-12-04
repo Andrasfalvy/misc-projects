@@ -1,0 +1,15 @@
+#define CIRCLE_DISTANCE 10.0
+#define CIRCLE_SIZE_MIN 0.3
+#define CIRCLE_SIZE_MAX 0.6
+
+#define ANIM_DURATION 20.0
+#define DOT_ANIM_SPEED 2.0
+#define DOT_COLOR_BASE ivec3(169, 62, 255)
+#define BG_COLOR ivec3(0,0,0)
+
+#define HEADER_COLOR ivec3(200,200,200)
+#define HEADER_HEIGHT 100.
+#define HEADER_LINE_MARGIN 20.
+#define HEADER_LINE_THICKNESS 3.
+
+#define GLOBAL_MARGIN vec2(100., 20.)

@@ -10,22 +10,13 @@ uniform float iTime;
 uniform vec4 mode;
 //uniform vec2 cursor;
 
-#define CIRCLE_DISTANCE 10.0
-#define CIRCLE_SIZE_MIN 0.3
-#define CIRCLE_SIZE_MAX 0.6
-
-#define ANIM_DURATION 20.0
-#define DOT_ANIM_SPEED 2.0
-#define DOT_COLOR_BASE ivec3(169, 62, 255)
-const ivec3[] DOT_ACCENTS = ivec3[3](ivec3(0,0,0), ivec3(255,0,0), ivec3(0,255,0));
-#define BG_COLOR ivec3(0,0,0)
-
 #include "lygia/generative/random.glsl"
 #include "lygia/generative/cnoise.glsl"
 #include "lygia/animation/easing/cubic.glsl"
 #include "lygia/animation/easing/sine.glsl"
 #include "./utils/utils.glsl"
 #include "./utils/animation.glsl"
+#include "./utils/constants.glsl"
 
 float circleNoise(vec2 p, float t, float dist) {
     vec4 param = vec4(p, 0., 0.);

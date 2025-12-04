@@ -6,8 +6,10 @@ import BackgroundComponent from "./components/BackgroundComponent";
 import ChangeableProperty from "./ChangeableProperty";
 import HeaderComponent from "./components/HeaderComponent";
 import {RenderContext} from "../../../../common/components/CanvasRenderer";
+import HeaderLineComponent from "./components/HeaderLineComponent";
 
 export default class F1Renderer {
+    private static timeMultiplier = 1;
     private startTime: number;
     private initData?: {
         renderer: GLRenderer;
@@ -25,15 +27,16 @@ export default class F1Renderer {
 
     constructor(gameData: RawGameData) {
         this.gameData = new GameData(gameData);
-        this.startTime = Date.now()/1000;
+        this.startTime = (Date.now()/1000) * F1Renderer.timeMultiplier;
         this.initData = undefined;
 
-        this.mode = new ChangeableProperty(1, 2);
+        this.mode = new ChangeableProperty(0, 2);
         this.raceIndex = new ChangeableProperty(0, 2);
 
         this.allComponents = [
             new BackgroundComponent(),
-            new HeaderComponent()
+            new HeaderComponent(),
+            new HeaderLineComponent()
         ];
     }
 
@@ -85,7 +88,7 @@ export default class F1Renderer {
         if (!this.initData) this.init(ctx.ctx);
         let renderer = this.initData!.renderer;
 
-        let now = Date.now()/1000;
+        let now = (Date.now()/1000) * F1Renderer.timeMultiplier;
         ChangeableProperty.setNow(now);
 
         let pointer: [number,number] = [-1000, -1000];

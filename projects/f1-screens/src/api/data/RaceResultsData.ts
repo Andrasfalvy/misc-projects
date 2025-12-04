@@ -15,28 +15,39 @@ export default class RaceResultsData {
         this.data = raw;
         this.driverMap = new Map();
 
+        let finishCounts = raw.driverData.filter(d=>d.timeType == "finish").length;
+        if (finishCounts == 0) {
+            throw new Error(`Driver results for race ${index+1} do not contain any first place finish times (timeType "finish")`);
+        }
+        if (finishCounts > 1) {
+            throw new Error(`Driver results for race ${index+1} contain multiple first place finish times (timeType "finish")`);
+        }
+
+        let firstPlaceFinishTime = raw.driverData.find(d=>d.timeType == "finish")!.time!;
+
         let sorted = raw.driverData.sort((a, b)=>{
-            if (typeof a.time === "string" && typeof b.time === "string") {
-                // did_not_finish first,
-                // disqualified second
-                return a.time.localeCompare(b.time);
-            }
-            if (typeof a.time === "number" && typeof b.time === "string") return -1;
-            if (typeof a.time === "string" && typeof b.time === "number") return 1;
+            // Priority
+            let priorityA = Priority[a.timeType];
+            let priorityB = Priority[b.timeType];
+            if (priorityA !== priorityB) return priorityB - priorityA;
 
-            // Finish time first
-            if (a.timeType == "finish") return -1;
-            if (b.timeType == "finish") return 1;
+            if (a.time == null && b.time == null) return 0;
+            if (a.time == null && b.time != null) return 1;
+            if (a.time != null && b.time == null) return -1;
 
-            // Only relative time numbers now
-            let timeA = (a.time as number) + a.penaltyTime;
-            let timeB = (a.time as number) + a.penaltyTime;
+            // Calculate absolute time
+            let timeA = a.time!;
+            if (a.timeType == "from_leader") timeA += firstPlaceFinishTime;
+
+            let timeB = b.time!;
+            if (b.timeType == "from_leader") timeB += firstPlaceFinishTime;
+
             return timeA - timeB;
         });
 
         let overallBestLapTime = Number.MAX_SAFE_INTEGER;
         for (let driverData of sorted) {
-            if (driverData.bestLapTime < overallBestLapTime) overallBestLapTime = driverData.bestLapTime;
+            if (driverData.bestLapTime != null && driverData.bestLapTime < overallBestLapTime) overallBestLapTime = driverData.bestLapTime;
         }
 
         for (let i = 0; i < sorted.length; i++){
@@ -88,15 +99,24 @@ export interface RaceDriverData {
     driver: DriverData,
     team: TeamData | null,
 
-    startingPosition: number,
+    startingPosition: number | null,
     finishingPosition: number
     points: number,
 
-    numberOfPitStops: number,
-    bestLapTime: number,
+    numberOfPitStops: number | null,
+    bestLapTime: number | null,
     isBestLapTimeOverall: boolean,
 
-    time: number | "did_not_finish" | "did_not_start" | "disqualified",
-    timeType: "finish" | "from_leader" | "none",
+    time: number | null,
+    timeType: "finish" | "from_leader" | "lapped" | "none" | "did_not_finish" | "did_not_start" | "disqualified",
     penaltyTime: number,
 }
+const Priority = {
+    "finish": 1,
+    "from_leader": 1,
+    "lapped": 3,
+    "none": 4,
+    "did_not_finish": 5,
+    "did_not_start": 6,
+    "disqualified": 7,
+} satisfies Record<RaceDriverData["timeType"], number>
