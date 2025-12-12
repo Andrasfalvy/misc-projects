@@ -465,7 +465,7 @@
                 }
             ]
         },
-         {
+        {
             "map": "Monza",
             "lapCount": 19,
             "driverData": [
@@ -570,6 +570,112 @@
                     "penaltyTime": 0
                 }
             ]
+        },
+        {
+          "map": "Austin",
+          "lapCount": 20,
+          "driverData": [
+            {
+              "playerId": "adre",
+              "teamId": "racing_bulls",
+              "startingPosition": 5,
+              "numberOfPitStops": 1,
+              "bestLapTime": 96.437,
+              "time": 2000.720,
+              "timeType": "finish",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "beni",
+              "teamId": "redbull",
+              "startingPosition": 2,
+              "numberOfPitStops": 1,
+              "bestLapTime": 95.289,
+              "time": 20.110,
+              "timeType": "from_leader",
+              "penaltyTime": 10
+            },
+            {
+              "playerId": "adam",
+              "teamId": "redbull",
+              "startingPosition": 1,
+              "numberOfPitStops": 1,
+              "bestLapTime": 96.764,
+              "time": 21.163,
+              "timeType": "from_leader",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "providence",
+              "teamId": "racing_bulls",
+              "startingPosition": 4,
+              "numberOfPitStops": 1,
+              "bestLapTime": 99.146,
+              "time": 1,
+              "timeType": "lapped",
+              "penaltyTime": 3
+            },
+            {
+              "playerId": "zomboja",
+              "teamId": "ferrari",
+              "startingPosition": 3,
+              "numberOfPitStops": 1,
+              "bestLapTime": 99.143,
+              "time": null,
+              "timeType": "did_not_finish",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "patat",
+              "teamId": "mclaren",
+              "startingPosition": null,
+              "numberOfPitStops": null,
+              "bestLapTime": null,
+              "time": null,
+              "timeType": "did_not_start",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "meise",
+              "teamId": "sauber",
+              "startingPosition": null,
+              "numberOfPitStops": null,
+              "bestLapTime": null,
+              "time": null,
+              "timeType": "did_not_start",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "derrock",
+              "teamId": "mercedes",
+              "startingPosition": null,
+              "numberOfPitStops": null,
+              "bestLapTime": null,
+              "time": null,
+              "timeType": "did_not_start",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "kipsy",
+              "teamId": "aston_martin",
+              "startingPosition": null,
+              "numberOfPitStops": null,
+              "bestLapTime": null,
+              "time": null,
+              "timeType": "did_not_start",
+              "penaltyTime": 0
+            },
+            {
+              "playerId": "tim",
+              "teamId": "mercedes",
+              "startingPosition": null,
+              "numberOfPitStops": null,
+              "bestLapTime": null,
+              "time": "did_not_start",
+              "timeType": "none",
+              "penaltyTime": 0
+            }
+          ]
         }
     ],
     "reserveIconUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAAaCAIAAAB3vOj6AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAASdEVYdFNvZnR3YXJlAEdyZWVuc2hvdF5VCAUAAADlSURBVFhHY5BjYhq0iAFTaPCgUceRi0YdRy4a1o47vmffi4eP4ej5g0fnjhzLDo/AVEkGooLjNi9fDufaq6tvXbHy0snTQdY2mIpJRVR2nBwTU3Z4xI3zF5sKCjEVk4pGkuO8jE12rFk3iKIVM0MUxcVhqiQDUcFx8JCL8/C8cvrsgkmTMZWRh6jpODkmprl9/dfPXUjx98dUSQaisuOCrG0unTy9ZNp0TJVkICo7To6JadXcedfOngt3dMJUTCqivuOKExJvX77aVVmFqZhURKnjaIpGHUcuGnUcuWjUceSiQe04ACBeJxNGnsEdAAAAAElFTkSuQmCC",
