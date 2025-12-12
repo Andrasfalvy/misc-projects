@@ -39,7 +39,6 @@ export default class App extends Component<AppProps> {
     render() {
         return <div className="app">
             <div style={{fontFamily: "Formula1"}}>
-                szilya
             </div>
             <CanvasRenderer type={"webgl2"} options={{
                 antialias: true,

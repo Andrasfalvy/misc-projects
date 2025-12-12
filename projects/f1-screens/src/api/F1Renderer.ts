@@ -11,6 +11,7 @@ import PodiumComponent from "./components/PodiumComponent";
 
 export default class F1Renderer {
     private static timeMultiplier = 1;
+    private static renderSizeMultiplier = 1;
     private startTime: number;
     private initData?: {
         renderer: GLRenderer;
@@ -90,13 +91,15 @@ export default class F1Renderer {
         if (!this.initData) this.init(ctx.ctx);
         let renderer = this.initData!.renderer;
 
+        let canvas = ctx.ctx.canvas as HTMLCanvasElement;
+
         let now = (Date.now()/1000) * F1Renderer.timeMultiplier;
         ChangeableProperty.setNow(now);
 
         let pointer: [number,number] = [-1000, -1000];
         if (ctx.pointers.size > 0) {
             let e = [...ctx.pointers.values()][0];
-            pointer = [e.clientX, ctx.ctx.canvas.height-e.clientY];
+            pointer = [e.clientX, canvas.clientHeight-e.clientY];
         }
 
         let context: ComponentContext = {
@@ -106,7 +109,7 @@ export default class F1Renderer {
             renderer: this,
             gameData: this.gameData,
 
-            screen: [ctx.ctx.canvas.width, ctx.ctx.canvas.height],
+            screen: [canvas.clientWidth, canvas.clientHeight],
             pointer: pointer,
 
             time: {
@@ -117,7 +120,7 @@ export default class F1Renderer {
         }
 
         // Render
-        renderer.resize(ctx.ctx.canvas.width, ctx.ctx.canvas.height);
+        renderer.resize(canvas.clientWidth * F1Renderer.renderSizeMultiplier, canvas.clientHeight * F1Renderer.renderSizeMultiplier);
         renderer.clear([0, 0, 0, 0]);
         for (let component of this.allComponents) {
             component.performRender(renderer, context);
