@@ -15,7 +15,6 @@ uniform float textureDuration;
 out vec2 CornerPos;
 
 #include "./utils/utils.glsl"
-#include "./utils/constants.glsl"
 
 void main() {
     vec2 zeroToOne = CornerPosition/2. + 0.5;

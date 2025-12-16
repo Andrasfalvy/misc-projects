@@ -1,15 +1,20 @@
 export default interface RawGameData {
     teamData: RawTeamData[];
     drivers: RawDriverData[];
-    raceResults: RawRaceResultsData[];
+    raceResults: RawRaceData[];
     reserveIconUrl: string;
     pointMap: Record<string, number>;
     name: string;
     plannedRaceCount: number;
 }
-export interface RawRaceResultsData {
+export interface RawRaceData {
     map: string;
+    mapFlag: string;
     lapCount: number;
+    date: string;
+    results: RawRaceResultsData | null
+}
+export interface RawRaceResultsData {
     driverData: {
         playerId: string,
         teamId: string,

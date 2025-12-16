@@ -14,10 +14,7 @@ uniform sampler2D textureTo;
 uniform float textureDelta;
 uniform float textureDuration;
 
-#include "lygia/animation/easing/cubic.glsl"
 #include "./utils/utils.glsl"
-#include "./utils/animation.glsl"
-#include "./utils/constants.glsl"
 
 float fadeInModeTime() {
     bool fromZero = roughly(mode[0], 0.);

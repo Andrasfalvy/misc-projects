@@ -8,10 +8,7 @@ uniform vec4 mode;
 
 out vec2 CornerPos;
 
-#include "lygia/animation/easing/cubic.glsl"
-#include "./utils/animation.glsl"
 #include "./utils/utils.glsl"
-#include "./utils/constants.glsl"
 
 float fadeInModeTime() {
     bool fromZero = roughly(mode[0], 0.);

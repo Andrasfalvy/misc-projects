@@ -5,6 +5,7 @@ import AbstractComponent from "./AbstractComponent";
 import {ComponentContext} from "../F1Renderer";
 import TextRenderer from "../TextRenderer";
 import ChangeableProperty from "../ChangeableProperty";
+import TextureUtils from "../TextRenderer";
 export default class HeaderComponent extends AbstractComponent {
     private textureCacheMap = new Map<string,GLTexture>();
     private pageTitleComponent!: ChangeableProperty<GLTexture>;
@@ -21,7 +22,7 @@ export default class HeaderComponent extends AbstractComponent {
             return this.textureCacheMap.get(key)!;
         }
         const font = {family: "Formula1",size:"60px",weight: bold ? "bold" : "normal"};
-        let result = TextRenderer.render(renderer, undefined, font, value);
+        let result = TextureUtils.updateOrNew(renderer, undefined, TextureUtils.renderText(font, value));
         this.textureCacheMap.set(key, result);
         return result!;
     }
@@ -34,7 +35,7 @@ export default class HeaderComponent extends AbstractComponent {
         });
         this.mapNameComponent = context.raceIndex.createDerived(raceIndex => {
             let key = "map_" + raceIndex;
-            let value = context.gameData.getRaceResults(raceIndex).getMap();
+            let value = context.gameData.getRaceData(raceIndex).getMap();
             return this.getTexture(renderer, key, value, false);
         });
         this.roundCounterComponent = context.raceIndex.createDerived(raceIndex => {
@@ -142,7 +143,8 @@ const ModeNames = [
     "race_podium",
     "race_results",
     "constructors_standings",
-    "drivers_championship"
+    "drivers_championship",
+    "calendar"
 ] satisfies Record<number, keyof typeof TextureMap>;
 const TextureMap = {
     "nothing": "Nothing",
@@ -150,4 +152,5 @@ const TextureMap = {
     "race_results": "Race Results",
     "constructors_standings": "Constructor Standings",
     "drivers_championship": "Drivers Championship",
+    "calendar": "Calendar",
 } satisfies Record<string, string>;

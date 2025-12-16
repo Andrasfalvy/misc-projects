@@ -3,7 +3,7 @@ import podiumVsh from "./PodiumComponent.vsh";
 import podiumFsh from "./PodiumComponent.fsh";
 import AbstractComponent from "./AbstractComponent";
 import {ComponentContext} from "../F1Renderer";
-import TextRenderer from "../TextRenderer";
+import TextureUtils from "../TextRenderer";
 export default class PodiumComponent extends AbstractComponent {
     private textureCacheMap = new Map<string,GLTexture>();
     private program!: GLProgram<InterpolatedImageProps>;
@@ -35,7 +35,7 @@ export default class PodiumComponent extends AbstractComponent {
             return this.textureCacheMap.get(key)!;
         }
         const font = {family: "Formula1",size:"60px",weight: bold ? "bold" : "normal"};
-        let result = TextRenderer.render(renderer, undefined, font, value);
+        let result = TextureUtils.updateOrNew(renderer, undefined, TextureUtils.renderText(font, value));
         this.textureCacheMap.set(key, result);
         return result!;
     }
@@ -70,9 +70,11 @@ export default class PodiumComponent extends AbstractComponent {
             : context.raceIndex.getLastValue();
 
         if (race == this.currentRace) return;
+        this.currentRace = race;
 
         this.userData = [];
-        let raceResults = context.gameData.getRaceResults(race);
+        let raceResults = context.gameData.getRaceData(race);
+        if (!raceResults.hasResults()) return;
         let drivers = raceResults.getAllDriverData();
         for (let i = 0; i < 3; i++) {
             let result = drivers[i];

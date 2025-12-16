@@ -2,14 +2,14 @@ import Utils from "../../../../../common/Utils";
 import DriverData from "./DriverData";
 import RawGameData, {RawRaceResultsData} from "./RawGameData";
 import TeamData from "./TeamData";
-import RaceResultsData from "./RaceResultsData";
+import RaceData from "./RaceData";
 
 export default class GameData {
     private readonly data: RawGameData;
     private readonly drivers: Map<string, DriverData>;
     private readonly teams: Map<string, TeamData>;
     private readonly countryImageCache: Map<string, HTMLImageElement>;
-    private readonly raceResults: RaceResultsData[];
+    private readonly raceData: RaceData[];
     private readonly pointMap: Map<number,number>;
 
     constructor(raw: RawGameData) {
@@ -32,25 +32,29 @@ export default class GameData {
             this.pointMap.set(parseInt(pointMapKey), this.data.pointMap[pointMapKey]);
         }
 
-        this.raceResults = this.data.raceResults.map((raw,i)=>new RaceResultsData(this, i, raw));
+        this.raceData = this.data.raceResults.map((raw,i)=>new RaceData(this, i, raw));
 
         this.countryImageCache = new Map();
     }
 
     async init() {
+        let promises: Promise<void>[] = [];
         for (let driver of this.drivers.values()) {
-            await driver.init();
+            promises.push(driver.init());
         }
         for (let team of this.teams.values()) {
-            await team.init();
+            promises.push(team.init());
         }
+        for (let race of this.raceData) {
+            promises.push(race.init());
+        }
+        await Promise.all(promises);
     }
 
     async cacheCountryFlag(countryCode: string) {
         if (this.countryImageCache.has(countryCode)) return this.countryImageCache.get(countryCode)!;
 
         let img = await Utils.loadImage(`https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/${countryCode.toLowerCase()}.svg`);
-        console.log(img, img.naturalWidth, img.naturalHeight);
         this.countryImageCache.set(countryCode, img);
         return img;
     }
@@ -67,9 +71,9 @@ export default class GameData {
         let driver = this.getDriver(driverId);
         if (driver == null) return result;
 
-        let count = afterRace ?? this.raceResults.length;
+        let count = afterRace ?? this.raceData.length;
         for (let i = 0; i < count; i++) {
-            let raceResults = this.raceResults[i];
+            let raceResults = this.raceData[i];
             let driverData = raceResults.getDriverData(driver);
             if (driverData == null) continue;
 
@@ -98,8 +102,11 @@ export default class GameData {
     getTeam(teamId: string) {
         return this.teams.get(teamId);
     }
-    getRaceResults(race?: number) {
-        return this.raceResults[race ?? this.raceResults.length - 1];
+    getRaceData(race?: number) {
+        return this.raceData[race ?? this.raceData.length - 1];
+    }
+    getAllRaceData() {
+        return this.raceData;
     }
 
     getPointForPosition(position: number) {
@@ -107,7 +114,7 @@ export default class GameData {
     }
 
     getActualRaceCount() {
-        return this.raceResults.length;
+        return this.raceData.length;
     }
     getPlannedRaceCount() {
         return this.data.plannedRaceCount;

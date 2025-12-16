@@ -9,14 +9,7 @@ uniform float iTime;
 
 uniform vec4 mode;
 //uniform vec2 cursor;
-
-#include "lygia/generative/random.glsl"
-#include "lygia/generative/cnoise.glsl"
-#include "lygia/animation/easing/cubic.glsl"
-#include "lygia/animation/easing/sine.glsl"
 #include "./utils/utils.glsl"
-#include "./utils/animation.glsl"
-#include "./utils/constants.glsl"
 
 float circleNoise(vec2 p, float t, float dist) {
     vec4 param = vec4(p, 0., 0.);

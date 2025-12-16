@@ -17,10 +17,7 @@ uniform sampler2D flagTex;
 uniform sampler2D teamTex;
 uniform sampler2D positionTex;
 
-#include "lygia/animation/easing/cubic.glsl"
 #include "./utils/utils.glsl"
-#include "./utils/animation.glsl"
-#include "./utils/constants.glsl"
 
 float fadeInModeTime() {
     bool fromOne = roughly(mode[0], 1.);

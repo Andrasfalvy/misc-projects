@@ -8,6 +8,7 @@ import HeaderComponent from "./components/HeaderComponent";
 import {RenderContext} from "../../../../common/components/CanvasRenderer";
 import HeaderLineComponent from "./components/HeaderLineComponent";
 import PodiumComponent from "./components/PodiumComponent";
+import CalendarComponent from "./components/CalendarComponent";
 
 export default class F1Renderer {
     private static timeMultiplier = 1;
@@ -39,7 +40,8 @@ export default class F1Renderer {
             new BackgroundComponent(),
             new HeaderComponent(),
             new HeaderLineComponent(),
-            new PodiumComponent()
+            new PodiumComponent(),
+            new CalendarComponent()
         ];
     }
 

@@ -1,21 +1,30 @@
-import {RawRaceResultsData} from "./RawGameData";
+import {RawRaceData, RawRaceResultsData} from "./RawGameData";
 import GameData from "./GameData";
 import DriverData from "./DriverData";
 import TeamData from "./TeamData";
+import Utils from "../../../../../common/Utils";
 
-export default class RaceResultsData {
+export default class RaceData {
     private readonly gameData: GameData;
     private readonly index: number;
-    private readonly data: RawRaceResultsData;
-    private readonly driverMap: Map<DriverData, RaceDriverData>;
+    private readonly data: RawRaceData;
+    private readonly date: Date;
+    private flag?: HTMLImageElement;
+    private readonly driverMap: Map<DriverData, RaceDriverData> | null;
 
-    constructor(gameData: GameData, index: number, raw: RawRaceResultsData) {
+    constructor(gameData: GameData, index: number, raw: RawRaceData) {
         this.gameData = gameData;
         this.index = index;
+        this.date = new Date(raw.date);
         this.data = raw;
+        if (raw.results == null) {
+            this.driverMap = null;
+            return;
+        }
+
         this.driverMap = new Map();
 
-        let finishCounts = raw.driverData.filter(d=>d.timeType == "finish").length;
+        let finishCounts = raw.results.driverData.filter(d=>d.timeType == "finish").length;
         if (finishCounts == 0) {
             throw new Error(`Driver results for race ${index+1} do not contain any first place finish times (timeType "finish")`);
         }
@@ -23,9 +32,9 @@ export default class RaceResultsData {
             throw new Error(`Driver results for race ${index+1} contain multiple first place finish times (timeType "finish")`);
         }
 
-        let firstPlaceFinishTime = raw.driverData.find(d=>d.timeType == "finish")!.time!;
+        let firstPlaceFinishTime = raw.results.driverData.find(d=>d.timeType == "finish")!.time!;
 
-        let sorted = raw.driverData.sort((a, b)=>{
+        let sorted = raw.results.driverData.sort((a, b)=>{
             // Priority
             let priorityA = Priority[a.timeType];
             let priorityB = Priority[b.timeType];
@@ -79,6 +88,11 @@ export default class RaceResultsData {
         }
     }
 
+    async init() {
+        this.flag = await this.gameData.cacheCountryFlag(this.data.mapFlag);
+    }
+
+
     getRaceIndex() {
         return this.index;
     }
@@ -89,13 +103,32 @@ export default class RaceResultsData {
     getLapCount() {
         return this.data.lapCount;
     }
+    getDate() {
+        return this.date;
+    }
+    getFlag() {
+        return this.flag!;
+    }
+    getCountry() {
+        return this.data.mapFlag;
+    }
 
     getDriverData(driver: DriverData) {
+        if (this.driverMap == null) return null;
         return this.driverMap.get(driver);
     }
 
+    getMapFlag() {
+        return this.data.mapFlag;
+    }
+
     getAllDriverData() {
+        if (this.driverMap == null) return [];
         return [...this.driverMap.values()].sort((a,b)=>a.finishingPosition-b.finishingPosition);
+    }
+
+    hasResults() {
+        return this.data.results != null;
     }
 }
 export interface RaceDriverData {
