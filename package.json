@@ -12,6 +12,7 @@
         "@babel/preset-env": "^7.24.3",
         "@babel/preset-react": "^7.24.1",
         "@babel/preset-typescript": "^7.24.1",
+        "@mrgazdag/ts-shader-loader": "^2.0.4",
         "@types/node": "^18.0.0",
         "@types/react": "^18.2.73",
         "@types/react-dom": "^18.2.22",

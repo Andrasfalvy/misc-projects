@@ -53,7 +53,8 @@ export function webpackConfigPreset(root=false) {
                 },
                 {
                     test: /\.(glsl|vsh|fsh)$/i,
-                    use: ['raw-loader', 'webpack-lygia-loader']
+                    //use: ['raw-loader', 'webpack-lygia-loader']
+                    loader: '@mrgazdag/ts-shader-loader'
                 },
                 {
                     test: /\.s[ac]ss$/i,
