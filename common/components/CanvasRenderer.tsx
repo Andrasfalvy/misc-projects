@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import "./CanvasRenderer.scss";
 
-export default class CanvasRenderer extends Component<CanvasRendererProps> {
+export default class CanvasRenderer extends Component<CanvasRendererProps, CanvasState> {
     private readonly canvasDivRef = React.createRef<HTMLDivElement>();
     private readonly canvasRef = React.createRef<HTMLCanvasElement>();
     private readonly resizeHandler: () => void;
@@ -13,6 +13,10 @@ export default class CanvasRenderer extends Component<CanvasRendererProps> {
         super(props);
         this.resizeHandler = ()=>this.onResize();
         this.ctx = null;
+
+        this.state = {
+            lastError: null
+        };
     }
 
     private onResize() {
@@ -39,8 +43,14 @@ export default class CanvasRenderer extends Component<CanvasRendererProps> {
                     pointers: new Map()
                 }
             }
-            (this.props.renderFunc as unknown as (ctx: RenderContext)=>void)(this.ctx);
-            this.animFrame = requestAnimationFrame(renderer);
+            try {
+                (this.props.renderFunc as unknown as (ctx: RenderContext)=>void)(this.ctx);
+                this.setState({lastError: null});
+                this.animFrame = requestAnimationFrame(renderer);
+            } catch (e) {
+                console.error(e);
+                this.setState({lastError: (e as Error).stack!});
+            }
         };
         this.animFrame = requestAnimationFrame(renderer);
     }
@@ -55,6 +65,7 @@ export default class CanvasRenderer extends Component<CanvasRendererProps> {
     render() {
         return <div className="canvas-renderer">
             <div ref={this.canvasDivRef} className="_canvas">
+                {this.state.lastError ? <code className="_error">{this.state.lastError}</code> : null}
             </div>
             <canvas ref={this.canvasRef} width="1" height="1"
                     onPointerDown={e=>{
@@ -91,4 +102,7 @@ type CanvasContext = CanvasRenderingContext2D | ImageBitmapRenderingContext | We
 export interface RenderContext<T extends CanvasContext=CanvasContext> {
     pointers: Map<number, React.PointerEvent>;
     ctx: T;
+}
+interface CanvasState {
+    lastError: string | null;
 }
