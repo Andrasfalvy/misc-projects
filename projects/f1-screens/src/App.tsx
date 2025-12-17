@@ -7,6 +7,7 @@ import Utils from "../../../common/Utils";
 
 export default class App extends Component<AppProps> {
     private keyDownHandler: (e: KeyboardEvent)=>void;
+    private recording: boolean = false;
     constructor(props: AppProps) {
         super(props);
 
@@ -16,7 +17,7 @@ export default class App extends Component<AppProps> {
             for (let key of keys) {
                 if (e.key == key) {
                     this.props.app.getMode().setValue(parseInt(key));
-                    break;
+                    return;
                 }
             }
             for (let i = 0; i < raceKeys.length; i++){
@@ -25,7 +26,13 @@ export default class App extends Component<AppProps> {
                     let max = this.props.app.getGameData().getActualRaceCount();
                     let value = Utils.clamp(i, 0, max+1);
                     this.props.app.getRaceIndex().setValue(value-1);
+                    return;
                 }
+            }
+
+            if (e.key == "Enter") {
+                // Perform recording
+                this.recording = true;
             }
         };
     }
@@ -45,8 +52,14 @@ export default class App extends Component<AppProps> {
                 alpha: true,
                 preserveDrawingBuffer: true,
                 depth: false
-            }} renderFunc={(ctx)=>{
-                this.props.app.render(ctx);
+            }} renderFunc={async (ctx)=>{
+                if (this.recording) {
+                    await this.props.app.record(ctx, 20, 60);
+                    this.recording = false;
+                }
+                if (!this.props.app.isRecording()) {
+                    this.props.app.render(ctx);
+                }
             }}/>
         </div>;
     }

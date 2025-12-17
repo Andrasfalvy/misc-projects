@@ -14,7 +14,11 @@ uniform sampler2D nextUpTx;
 uniform sampler2D raceNumberTx;
 uniform sampler2D nameTx;
 uniform sampler2D flagTx;
-uniform sampler2D shortDateTx;
+
+uniform sampler2D monthTx;
+uniform sampler2D dashTx;
+uniform sampler2D dayTx;
+
 uniform sampler2D longDateTx;
 uniform sampler2D shortTimeTx;
 uniform sampler2D longTimeTx;
@@ -81,8 +85,9 @@ vec4 drawNextUp(vec2 pos) {
 
 vec4 drawTimeZone(vec2 pos, bool selected) {
     float gap = 5.;
+    float distRight = 80.;
     vec2 size = vec2(multilineTextureSize(timeZoneTx, 0)) * 0.4;
-    vec2 center = vec2(boxSize.x - gap - size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
+    vec2 center = vec2(boxSize.x - gap - distRight + gap/2. + size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
 
     if (selected) {
         vec2 timeSize = vec2(multilineTextureSize(shortTimeTx, 0)) * 0.4;
@@ -104,7 +109,7 @@ vec4 drawShortTime(vec2 pos) {
     vec2 size = vec2(multilineTextureSize(shortTimeTx, 0)) * 0.4;
 
     vec2 zoneSize = vec2(multilineTextureSize(timeZoneTx, 0)) * 0.4;
-    vec2 center = vec2(boxSize.x - gap - zoneSize.x - gap - size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
+    vec2 center = vec2(boxSize.x - gap - CALENDAR_SHORT_TIME_OFFSET - gap/2. - size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
 
     //size = boxSize;
     //center = boxSize/2.;
@@ -129,14 +134,11 @@ vec4 drawLongTime(vec2 pos) {
     rectImageMultiline(result, longTimeTx, pos, center, size, iTime, 0.5, 2.);
     return result;
 }
-vec4 drawShortDate(vec2 pos) {
-    float gap = 5.;
-    float bigGap = 20.;
-    vec2 size = vec2(multilineTextureSize(shortDateTx, 0)) * 0.4;
+vec4 drawMonth(vec2 pos) {
+    vec2 size = vec2(multilineTextureSize(monthTx, 0)) * 0.4;
 
-    vec2 zoneSize = vec2(multilineTextureSize(timeZoneTx, 0)) * 0.4;
-    vec2 timeSize = vec2(multilineTextureSize(shortTimeTx, 0)) * 0.4;
-    vec2 center = vec2(boxSize.x - gap - zoneSize.x - gap - timeSize.x - bigGap - size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
+    vec2 dashSize = vec2(multilineTextureSize(dashTx, 0)) * 0.4;
+    vec2 center = vec2(boxSize.x - CALENDAR_SHORT_DATE_OFFSET - dashSize.x/2. - size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
 
     //size = boxSize;
     //center = boxSize/2.;
@@ -144,7 +146,36 @@ vec4 drawShortDate(vec2 pos) {
     //return vec4(vec2(multilineTextureSize(timeZoneTx, 0)), 0., 1.);
 
     vec4 result;
-    rectImageMultiline(result, shortDateTx, pos, center, size, iTime, 0.5, 2.);
+    rectImageMultiline(result, monthTx, pos, center, size, iTime, 0.5, 2.);
+    return result;
+}
+vec4 drawDash(vec2 pos) {
+    vec2 size = vec2(multilineTextureSize(dashTx, 0)) * 0.4;
+
+    vec2 center = vec2(boxSize.x - CALENDAR_SHORT_DATE_OFFSET, CALENDAR_ENTRY_HEIGHT * 0.5);
+
+    //size = boxSize;
+    //center = boxSize/2.;
+    //if (true) return rectImage(nextUpTx, pos, center, size) * 0.8;
+    //return vec4(vec2(multilineTextureSize(timeZoneTx, 0)), 0., 1.);
+
+    vec4 result;
+    rectImageMultiline(result, dashTx, pos, center, size, iTime, 0.5, 2.);
+    return result;
+}
+vec4 drawDay(vec2 pos) {
+    vec2 size = vec2(multilineTextureSize(dayTx, 0)) * 0.4;
+
+    vec2 dashSize = vec2(multilineTextureSize(dashTx, 0)) * 0.4;
+    vec2 center = vec2(boxSize.x - CALENDAR_SHORT_DATE_OFFSET + dashSize.x/2. + size.x/2., CALENDAR_ENTRY_HEIGHT * 0.5);
+
+    //size = boxSize;
+    //center = boxSize/2.;
+    //if (true) return rectImage(nextUpTx, pos, center, size) * 0.8;
+    //return vec4(vec2(multilineTextureSize(timeZoneTx, 0)), 0., 1.);
+
+    vec4 result;
+    rectImageMultiline(result, dayTx, pos, center, size, iTime, 0.5, 2.);
     return result;
 }
 
@@ -217,7 +248,9 @@ void main()
         contentColor = alphaMix(contentColor, drawName(pos, false));
         contentColor = alphaMix(contentColor, drawTimeZone(pos, false));
         contentColor = alphaMix(contentColor, drawShortTime(pos));
-        contentColor = alphaMix(contentColor, drawShortDate(pos));
+        contentColor = alphaMix(contentColor, drawMonth(pos));
+        contentColor = alphaMix(contentColor, drawDash(pos));
+        contentColor = alphaMix(contentColor, drawDay(pos));
     }
     contentColor.a *= (0.5 + 0.5 * beforeAlpha) * selectAlpha;
     fragColor = alphaMix(fragColor, contentColor);

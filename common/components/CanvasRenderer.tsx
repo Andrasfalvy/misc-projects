@@ -35,7 +35,7 @@ export default class CanvasRenderer extends Component<CanvasRendererProps, Canva
         window.addEventListener("resize", this.resizeHandler);
         this.onResize();
 
-        let renderer = ()=>{
+        let renderer = async ()=>{
             let canvas = this.canvasRef.current!;
             if (this.ctx == null) {
                 this.ctx = {
@@ -44,7 +44,7 @@ export default class CanvasRenderer extends Component<CanvasRendererProps, Canva
                 }
             }
             try {
-                (this.props.renderFunc as unknown as (ctx: RenderContext)=>void)(this.ctx);
+                await (this.props.renderFunc as unknown as (ctx: RenderContext)=>void)(this.ctx);
                 this.setState({lastError: null});
                 this.animFrame = requestAnimationFrame(renderer);
             } catch (e) {
@@ -84,19 +84,19 @@ export default class CanvasRenderer extends Component<CanvasRendererProps, Canva
 type CanvasRendererProps = {
     type?: "2d",
     options?: CanvasRenderingContext2DSettings,
-    renderFunc: (ctx: RenderContext<CanvasRenderingContext2D>)=>void
+    renderFunc: (ctx: RenderContext<CanvasRenderingContext2D>)=>(void | Promise<void>)
 } | {
     type: "bitmaprenderer",
     options?: ImageBitmapRenderingContextSettings,
-    renderFunc: (ctx: RenderContext<ImageBitmapRenderingContext>)=>void
+    renderFunc: (ctx: RenderContext<ImageBitmapRenderingContext>)=>(void | Promise<void>)
 } | {
     type: "webgl",
     options?: WebGLContextAttributes,
-    renderFunc: (ctx: RenderContext<WebGLRenderingContext>)=>void
+    renderFunc: (ctx: RenderContext<WebGLRenderingContext>)=>(void | Promise<void>)
 } | {
     type: "webgl2",
     options?: WebGLContextAttributes,
-    renderFunc: (ctx: RenderContext<WebGL2RenderingContext>)=>void;
+    renderFunc: (ctx: RenderContext<WebGL2RenderingContext>)=>(void | Promise<void>);
 }
 type CanvasContext = CanvasRenderingContext2D | ImageBitmapRenderingContext | WebGLRenderingContext | WebGL2RenderingContext;
 export interface RenderContext<T extends CanvasContext=CanvasContext> {

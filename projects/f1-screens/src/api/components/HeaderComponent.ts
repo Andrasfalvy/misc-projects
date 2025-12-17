@@ -34,16 +34,30 @@ export default class HeaderComponent extends AbstractComponent {
             return this.getTexture(renderer, key, value, true);
         });
         this.mapNameComponent = context.raceIndex.createDerived(raceIndex => {
-            raceIndex = Math.max(raceIndex, 0);
-            let key = "map_" + raceIndex;
-            let value = context.gameData.getRaceData(raceIndex).getMap();
+            let key;
+            let value;
+
+            if (raceIndex == -1) {
+                key = "map_overview";
+                value = "Overview";
+            } else {
+                key = "map_" + raceIndex;
+                value = context.gameData.getRaceData(raceIndex).getMap();
+            }
             return this.getTexture(renderer, key, value, false);
         });
         this.roundCounterComponent = context.raceIndex.createDerived(raceIndex => {
-            raceIndex = Math.max(raceIndex, 0);
-            let raceCount = context.gameData.getPlannedRaceCount();
-            let key = "round_" + raceIndex + "_of_" + raceCount;
-            let value = "Round " + (raceIndex + 1) + " of " + raceCount;
+            let key;
+            let value;
+
+            if (raceIndex == -1) {
+                key = "round_overview";
+                value = "";
+            } else {
+                let raceCount = context.gameData.getPlannedRaceCount();
+                key = "round_" + raceIndex + "_of_" + raceCount;
+                value = "Round " + (raceIndex + 1) + " of " + raceCount;
+            }
             return this.getTexture(renderer, key, value, false);
         });
         // Create a shader program

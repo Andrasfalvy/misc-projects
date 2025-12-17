@@ -9,6 +9,7 @@ import {RenderContext} from "../../../../common/components/CanvasRenderer";
 import HeaderLineComponent from "./components/HeaderLineComponent";
 import PodiumComponent from "./components/PodiumComponent";
 import CalendarComponent from "./components/CalendarComponent";
+import JSZip from "jszip";
 
 export default class F1Renderer {
     private static timeMultiplier = 1;
@@ -25,6 +26,7 @@ export default class F1Renderer {
     private mode: ChangeableProperty<number>;
     private raceIndex: ChangeableProperty<number>;
     private gameData: GameData;
+    private recording: boolean;
 
     private allComponents: AbstractComponent[];
 
@@ -36,6 +38,8 @@ export default class F1Renderer {
         this.mode = new ChangeableProperty(5, 2);
         this.raceIndex = new ChangeableProperty(-1, 2);
 
+        this.recording = false;
+
         this.allComponents = [
             new BackgroundComponent(),
             new HeaderComponent(),
@@ -43,6 +47,57 @@ export default class F1Renderer {
             new PodiumComponent(),
             new CalendarComponent()
         ];
+    }
+
+    reset() {
+        this.startTime = (Date.now()/1000) * F1Renderer.timeMultiplier;
+    }
+
+    async record(context: RenderContext<WebGL2RenderingContext>, seconds: number, fps: number) {
+        for (let allComponent of this.allComponents) {
+            allComponent.performDispose();
+        }
+
+        this.recording = true;
+        try {
+            let zip = new JSZip();
+
+            let start = 0;
+            this.startTime = start;
+            this.mode.overwrite(5);
+            this.raceIndex.overwrite(-1);
+            let totalFrames = seconds * fps;
+            let frameTime = 1/fps;
+
+            for (let i = 0; i < totalFrames; i++) {
+                let time = start + i * frameTime;
+                console.log("rendering frame", i, "/", totalFrames, "   ", time, "/", seconds);
+                this.render(context, time);
+                let canvas = context.ctx.canvas as HTMLCanvasElement;
+                let blob = await new Promise<Blob>((res,rej)=>{
+                    canvas.toBlob(b=>{
+                        if (!b) rej(new Error("Failed to create blob"));
+                        res(b!);
+                    }, "image/png");
+                });
+                zip.file(`${i}.png`, blob);
+            }
+
+            // Generate zip (Blob) and download
+            const zipBlob = await zip.generateAsync({
+                type: "blob",
+                compression: "DEFLATE",
+                compressionOptions: { level: 6 },
+            });
+
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(zipBlob);
+            a.download = `capture.zip`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        } finally {
+            this.recording = false;
+        }
     }
 
     getRectBuffers() {
@@ -89,13 +144,18 @@ export default class F1Renderer {
             }
         };
     }
-    render(ctx: RenderContext<WebGL2RenderingContext>) {
+    isRecording() {
+        return this.recording;
+    }
+    render(ctx: RenderContext<WebGL2RenderingContext>, time?: number) {
         if (!this.initData) this.init(ctx.ctx);
         let renderer = this.initData!.renderer;
 
         let canvas = ctx.ctx.canvas as HTMLCanvasElement;
 
-        let now = (Date.now()/1000) * F1Renderer.timeMultiplier;
+        let now;
+        if (time == undefined) now = (Date.now()/1000) * F1Renderer.timeMultiplier;
+        else now = time;
         ChangeableProperty.setNow(now);
 
         let pointer: [number,number] = [-1000, -1000];

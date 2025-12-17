@@ -22,6 +22,7 @@ export default abstract class AbstractComponent {
         this.render(renderer, context);
     }
     performDispose() {
+        if (!this.initialized) return;
         this.dispose();
         this.initialized = false;
     }

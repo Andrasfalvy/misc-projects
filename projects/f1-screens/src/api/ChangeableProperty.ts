@@ -13,7 +13,7 @@ export default class ChangeableProperty<T> {
         this.last = value;
         this.current = value;
 
-        this.changeTime = 0;
+        this.changeTime = changeDuration;
         this.changeDuration = changeDuration;
 
         this.children = [];
@@ -86,6 +86,12 @@ export default class ChangeableProperty<T> {
             child.property.changeTime = this.changeTime;
             child.property.changeDuration = this.changeDuration;
         }
+    }
+
+    overwrite(target: T) {
+        this.last = this.current;
+        this.current = target;
+        this.changeTime = ChangeableProperty.now - this.changeDuration;
     }
 
     createDerived<R>(func: (value: T, prev?: R)=>R): ChangeableProperty<R> {

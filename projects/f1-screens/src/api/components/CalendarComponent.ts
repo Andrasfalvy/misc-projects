@@ -157,6 +157,11 @@ export default class CalendarComponent extends AbstractComponent {
             result.push({
                 timezone: label,
                 shortDate: shortDate,
+
+                month: monthAbbr,
+                dash: " — ",
+                day: day,
+
                 longDate: longDate,
                 shortTime: shortTime,
                 longTime: longTime
@@ -184,7 +189,11 @@ export default class CalendarComponent extends AbstractComponent {
                 raceNumberTx: props => props.raceNumberTx,
                 nameTx: props => props.nameTx,
                 flagTx: props => props.flagTx,
-                shortDateTx: props => props.shortDateTx,
+
+                monthTx: props => props.monthTx,
+                dashTx: props => props.dashTx,
+                dayTx: props => props.dayTx,
+
                 longDateTx: props => props.longDateTx,
                 shortTimeTx: props => props.shortTimeTx,
                 longTimeTx: props => props.longTimeTx,
@@ -199,7 +208,11 @@ export default class CalendarComponent extends AbstractComponent {
             let raceData = context.gameData.getAllRaceData()[i];
             let date = raceData.getDate();
             let multi = CalendarComponent.formatMultiTimeZones(date);
-            let shortDate = multi.map(e=>e.shortDate);
+
+            let month = multi.map(e=>e.month);
+            let dash = multi.map(e=>e.dash);
+            let day = multi.map(e=>e.day);
+
             let fullDate = multi.map(e=>e.longDate);
             let shortTime = multi.map(e=>e.shortTime);
             let longTime = multi.map(e=>e.longTime);
@@ -209,7 +222,11 @@ export default class CalendarComponent extends AbstractComponent {
                 raceNumberTx: this.getTextTexture(renderer, "race_number_" + i, "R" + (i+1), true),
                 nameTx: this.getTextTexture(renderer, "map_name_" + raceData.getMap(), raceData.getMap(), true),
                 flagTx: this.getImageTexture(renderer, "flag_" + raceData.getCountry(), raceData.getFlag()),
-                shortDateTx: this.getMultiTextTexture(renderer, "short_date_" + date.toDateString(), shortDate, "left", true),
+
+                monthTx: this.getMultiTextTexture(renderer, "short_date_month_" + date.toDateString(), month, "right", true),
+                dashTx: this.getMultiTextTexture(renderer, "short_date_dash_" + date.toDateString(), dash, "center", true),
+                dayTx: this.getMultiTextTexture(renderer, "short_date_day_" + date.toDateString(), day, "left", true),
+
                 longDateTx: this.getMultiTextTexture(renderer, "long_date_" + date.toDateString(), fullDate, "left", true),
                 shortTimeTx: this.getMultiTextTexture(renderer, "time_short_" + date.toTimeString(), shortTime, "right", true),
                 longTimeTx: this.getMultiTextTexture(renderer, "time_long_" + date.toTimeString(), longTime, "center", true),
@@ -219,7 +236,6 @@ export default class CalendarComponent extends AbstractComponent {
         }
     }
     render(renderer: GLRenderer, context: ComponentContext): void {
-        console.log("rendering calendar: ");
         for (let i = 0; i < this.allRaceData.length; i++){
             let raceData = this.allRaceData[i];
             this.program.draw({
@@ -233,7 +249,11 @@ export default class CalendarComponent extends AbstractComponent {
                 raceNumberTx: raceData.raceNumberTx,
                 nameTx: raceData.nameTx,
                 flagTx: raceData.flagTx,
-                shortDateTx: raceData.shortDateTx,
+
+                monthTx: raceData.monthTx,
+                dashTx: raceData.dashTx,
+                dayTx: raceData.dayTx,
+
                 longDateTx: raceData.longDateTx,
                 shortTimeTx: raceData.shortTimeTx,
                 longTimeTx: raceData.longTimeTx,
@@ -263,7 +283,11 @@ interface InterpolatedImageProps {
     raceNumberTx: GLTexture,
     flagTx: GLTexture,
     nameTx: GLTexture,
-    shortDateTx: GLTexture,
+
+    monthTx: GLTexture,
+    dashTx: GLTexture,
+    dayTx: GLTexture,
+
     longDateTx: GLTexture,
     shortTimeTx: GLTexture,
     longTimeTx: GLTexture,
@@ -274,7 +298,11 @@ interface CalendarRaceData {
     raceNumberTx: GLTexture,
     flagTx: GLTexture,
     nameTx: GLTexture,
-    shortDateTx: GLTexture,
+
+    monthTx: GLTexture,
+    dashTx: GLTexture,
+    dayTx: GLTexture,
+
     longDateTx: GLTexture,
     shortTimeTx: GLTexture,
     longTimeTx: GLTexture,
