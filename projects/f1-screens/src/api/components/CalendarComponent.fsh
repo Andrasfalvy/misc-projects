@@ -216,6 +216,7 @@ void main()
     vec2 pos = CornerPos * boxSize;
 
     fragColor = bg(CornerPos, selectTime);
+    fragColor = alphaMix(fragColor, drawRaceNumber(pos));
     vec4 contentColor = vec4(0.);
     if (selectTime > 1.) {
         /*
@@ -227,7 +228,6 @@ void main()
         }
         contentColor = alphaMix(contentColor, mlifOut);
         */
-        contentColor = alphaMix(contentColor, drawRaceNumber(pos));
         contentColor = alphaMix(contentColor, drawNextUp(pos));
         contentColor = alphaMix(contentColor, drawFlag(pos, true));
         contentColor = alphaMix(contentColor, drawName(pos, true));
@@ -243,7 +243,6 @@ void main()
         }
         contentColor = alphaMix(contentColor, mlifOut);
         */
-        contentColor = alphaMix(contentColor, drawRaceNumber(pos));
         contentColor = alphaMix(contentColor, drawFlag(pos, false));
         contentColor = alphaMix(contentColor, drawName(pos, false));
         contentColor = alphaMix(contentColor, drawTimeZone(pos, false));
