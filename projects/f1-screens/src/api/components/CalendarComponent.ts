@@ -228,8 +228,8 @@ export default class CalendarComponent extends AbstractComponent {
                 dayTx: this.getMultiTextTexture(renderer, "short_date_day_" + date.toDateString(), day, "left", true),
 
                 longDateTx: this.getMultiTextTexture(renderer, "long_date_" + date.toDateString(), fullDate, "left", true),
-                shortTimeTx: this.getMultiTextTexture(renderer, "time_short_" + date.toTimeString(), shortTime, "right", true),
-                longTimeTx: this.getMultiTextTexture(renderer, "time_long_" + date.toTimeString(), longTime, "center", true),
+                shortTimeTx: this.getMultiTextTexture(renderer, "time_short_" + date.toDateString(), shortTime, "right", true),
+                longTimeTx: this.getMultiTextTexture(renderer, "time_long_" + date.toDateString(), longTime, "center", true),
                 timeZoneTx: this.getMultiTextTexture(renderer, "timezones_" + date.toDateString(), timezone, "left", true),
                 //map: this.getTextTexture(renderer, "podium_position_" + i, Positions[i], true),
             });
