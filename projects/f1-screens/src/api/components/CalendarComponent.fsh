@@ -24,6 +24,8 @@ uniform sampler2D shortTimeTx;
 uniform sampler2D longTimeTx;
 uniform sampler2D timeZoneTx;
 
+uniform sampler2D lapsTx;
+
 #include "./utils/utils.glsl"
 
 vec4 bg(vec2 pos, float selection) {
@@ -194,6 +196,11 @@ vec4 drawLongDate(vec2 pos) {
     rectImageMultiline(result, longDateTx, pos, center, size, iTime, 0.5, 2.);
     return result;
 }
+vec4 drawLaps(vec2 pos) {
+    vec2 size = vec2(textureSize(lapsTx, 0)) * 0.4;
+    vec2 center = vec2(boxSize.x * (3./6.), CALENDAR_ENTRY_HEIGHT * 0.5);
+    return rectImage(lapsTx, pos, center, size);
+}
 
 void main()
 {
@@ -216,8 +223,9 @@ void main()
     vec2 pos = CornerPos * boxSize;
 
     fragColor = bg(CornerPos, selectTime);
-    fragColor = alphaMix(fragColor, drawRaceNumber(pos));
-    vec4 contentColor = vec4(0.);
+    vec4 allContentColor = vec4(0.);
+    allContentColor = alphaMix(allContentColor, drawRaceNumber(pos));
+    vec4 fadedContentColor = vec4(0.);
     if (selectTime > 1.) {
         /*
         vec4 mlifOut;
@@ -228,13 +236,14 @@ void main()
         }
         contentColor = alphaMix(contentColor, mlifOut);
         */
-        contentColor = alphaMix(contentColor, drawNextUp(pos));
-        contentColor = alphaMix(contentColor, drawFlag(pos, true));
-        contentColor = alphaMix(contentColor, drawName(pos, true));
-        contentColor = alphaMix(contentColor, drawLongTime(pos));
-        contentColor = alphaMix(contentColor, drawLongDate(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawNextUp(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawFlag(pos, true));
+        fadedContentColor = alphaMix(fadedContentColor, drawName(pos, true));
+        fadedContentColor = alphaMix(fadedContentColor, drawLongTime(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawLongDate(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawLaps(pos));
     } else {
-        /*
+    /*
         vec4 mlifOut;
         if (CornerPos.x < 0.5) {
             multilineIndexedFetch(mlifOut, timeTx, vec2(CornerPos.x*2.,CornerPos.y), iTime, 0.5, 1.);
@@ -243,16 +252,20 @@ void main()
         }
         contentColor = alphaMix(contentColor, mlifOut);
         */
-        contentColor = alphaMix(contentColor, drawFlag(pos, false));
-        contentColor = alphaMix(contentColor, drawName(pos, false));
-        contentColor = alphaMix(contentColor, drawTimeZone(pos, false));
-        contentColor = alphaMix(contentColor, drawShortTime(pos));
-        contentColor = alphaMix(contentColor, drawMonth(pos));
-        contentColor = alphaMix(contentColor, drawDash(pos));
-        contentColor = alphaMix(contentColor, drawDay(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawFlag(pos, false));
+        fadedContentColor = alphaMix(fadedContentColor, drawName(pos, false));
+        fadedContentColor = alphaMix(fadedContentColor, drawTimeZone(pos, false));
+        fadedContentColor = alphaMix(fadedContentColor, drawShortTime(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawMonth(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawDash(pos));
+        fadedContentColor = alphaMix(fadedContentColor, drawDay(pos));
     }
-    contentColor.a *= (0.5 + 0.5 * beforeAlpha) * selectAlpha;
-    fragColor = alphaMix(fragColor, contentColor);
+    fadedContentColor.a *= selectAlpha;
+    allContentColor = alphaMix(allContentColor, fadedContentColor);
+
+    allContentColor.a *= (0.5 + 0.5 * beforeAlpha);
+    fragColor = alphaMix(fragColor, allContentColor);
+
     fragColor.a *= fadeInAlpha;
     return;
 }

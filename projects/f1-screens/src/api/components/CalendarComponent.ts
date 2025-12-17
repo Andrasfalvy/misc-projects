@@ -198,6 +198,8 @@ export default class CalendarComponent extends AbstractComponent {
                 shortTimeTx: props => props.shortTimeTx,
                 longTimeTx: props => props.longTimeTx,
                 timeZoneTx: props => props.timeZoneTx,
+
+                lapsTx: props => props.lapsTx,
                 //mapTex: props => props.mapTx
             },
         });
@@ -218,6 +220,8 @@ export default class CalendarComponent extends AbstractComponent {
             let longTime = multi.map(e=>e.longTime);
             let timezone = multi.map(e=>e.timezone);
 
+            let laps = raceData.getLapCount();
+
             this.allRaceData.push({
                 raceNumberTx: this.getTextTexture(renderer, "race_number_" + i, "R" + (i+1), true),
                 nameTx: this.getTextTexture(renderer, "map_name_" + raceData.getMap(), raceData.getMap(), true),
@@ -231,6 +235,8 @@ export default class CalendarComponent extends AbstractComponent {
                 shortTimeTx: this.getMultiTextTexture(renderer, "time_short_" + date.toDateString(), shortTime, "right", true),
                 longTimeTx: this.getMultiTextTexture(renderer, "time_long_" + date.toDateString(), longTime, "center", true),
                 timeZoneTx: this.getMultiTextTexture(renderer, "timezones_" + date.toDateString(), timezone, "left", true),
+
+                lapsTx: this.getTextTexture(renderer, "laps_" + laps, laps + " lap" + (laps == 1 ? "" : "s"), false),
                 //map: this.getTextTexture(renderer, "podium_position_" + i, Positions[i], true),
             });
         }
@@ -258,6 +264,8 @@ export default class CalendarComponent extends AbstractComponent {
                 shortTimeTx: raceData.shortTimeTx,
                 longTimeTx: raceData.longTimeTx,
                 timeZoneTx: raceData.timeZoneTx,
+
+                lapsTx: raceData.lapsTx,
                 //mapTx: raceData.map,
             });
         }
@@ -292,6 +300,8 @@ interface InterpolatedImageProps {
     shortTimeTx: GLTexture,
     longTimeTx: GLTexture,
     timeZoneTx: GLTexture,
+
+    lapsTx: GLTexture,
     //mapTx: GLTexture,
 }
 interface CalendarRaceData {
@@ -307,6 +317,8 @@ interface CalendarRaceData {
     shortTimeTx: GLTexture,
     longTimeTx: GLTexture,
     timeZoneTx: GLTexture,
+
+    lapsTx: GLTexture,
     //mapTx: GLTexture,
 }
 const ZONES = [
