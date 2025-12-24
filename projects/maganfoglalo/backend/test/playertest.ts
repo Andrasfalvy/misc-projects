@@ -4,6 +4,10 @@ import * as readline from "node:readline";
     let ws = new WebSocket("ws://localhost:4000/ws");
     ws.onmessage = e=>console.log(e.data);
 
+    console.log("connecting...");
+    await new Promise(r=>ws.onopen = r);
+    console.log("connected");
+
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -13,6 +17,7 @@ import * as readline from "node:readline";
     rl.prompt();
 
     rl.on("line", (line) => {
+        line = line.trim();
         if (!line) {
             console.log("empty line");
             return rl.prompt();
@@ -23,6 +28,8 @@ import * as readline from "node:readline";
             console.error(e);
             return rl.prompt();
         }
+
+        console.log("sending:", line);
 
         ws.send(line);
 
