@@ -136,7 +136,7 @@ export default class Lobby {
         this.game.stop();
         this.game = null;
         for (let player of this.players.values()) {
-            player.setCustomPacketHandler(()=>{});
+            player.setCustomPacketHandler(null);
             player.unready();
         }
     }

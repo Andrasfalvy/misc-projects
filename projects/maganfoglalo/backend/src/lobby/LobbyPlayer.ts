@@ -33,7 +33,7 @@ export default class LobbyPlayer {
     private role: PlayerRole;
 
     private active: boolean;
-    private customPacketHandler: (e: any)=>void;
+    private customPacketHandler: ((e: any)=>boolean) | null;
     constructor(lobby: Lobby, id: string, client: NetworkClient, name: string) {
         this.lobby = lobby;
         this.id = id;
@@ -47,7 +47,7 @@ export default class LobbyPlayer {
         this.ready = false;
 
         this.active = true;
-        this.customPacketHandler = ()=>{};
+        this.customPacketHandler = null;
         this.handleClient(client);
     }
     private handleClient(client: NetworkClient) {
@@ -57,12 +57,12 @@ export default class LobbyPlayer {
             this.broadcastUpdate(false);
         });
         client.setHandler((p)=>{
-            this.handlePackets(p);
-            this.customPacketHandler(p);
+            if (this.handlePackets(p)) return;
+            if (this.customPacketHandler && this.customPacketHandler(p)) return;
             throw new Error("Unknown packet");
         });
     }
-    private handlePackets(packet: LobbyC2SPacket) {
+    private handlePackets(packet: LobbyC2SPacket): boolean {
         console.log("client packet: ", JSON.stringify(packet));
         if (packet.type == "lobby:player_self_update") {
             this.name = packet.name;
@@ -76,7 +76,11 @@ export default class LobbyPlayer {
             if (!target) throw new Error("Unknown player");
         } else if (packet.type == "lobby:gm_start_game") {
             this.lobby.startGame();
+        } else {
+            return false;
         }
+
+        return true;
     }
     private broadcastUpdate(includeSelf: boolean) {
         if (!this.active) return;
@@ -161,7 +165,7 @@ export default class LobbyPlayer {
         return this.role;
     }
 
-    setCustomPacketHandler(handler: (e: any)=>void) {
+    setCustomPacketHandler(handler: ((e: any)=>boolean) | null) {
         this.customPacketHandler = handler;
     }
 

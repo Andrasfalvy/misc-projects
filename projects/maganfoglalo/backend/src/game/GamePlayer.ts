@@ -26,7 +26,11 @@ export default class GamePlayer {
                 this.game.setAnswer(this, e.answer);
             } else if (e.type == "game:number_answer") {
                 this.game.setAnswer(this, e.answer);
+            } else {
+                return false;
             }
+
+            return true;
         });
     }
 
