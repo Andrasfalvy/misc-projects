@@ -1,10 +1,10 @@
 {
     "workspaces": [
         "index",
-        "projects/*"
+        "projects/**"
     ],
     "scripts": {
-        "build": "npm run prepare_build && npm run build --workspaces",
+        "build_frontend": "npm run prepare_build && npm run build_frontend --workspaces --if-present",
         "prepare_build": "node scripts/prepare_build.mjs"
     },
     "devDependencies": {

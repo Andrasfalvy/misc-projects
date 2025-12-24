@@ -2,6 +2,7 @@
   "name": "lorcana-card-sim",
   "displayName": "Lorcana Card Simulator",
   "description": "A small simulator to test out Lorcana decks",
+  "frontend": true,
   "private": true,
   "version": "0.1.0",
   "license": "LGPL-3.0-or-later",
@@ -10,7 +11,7 @@
     "url": "https://github.com/mrgazdag/misc-projects.git"
   },
   "scripts": {
-    "build": "webpack build",
+    "build_frontend": "webpack build",
     "watch": "webpack watch --mode development",
     "start": "tsx scripts/host.ts"
   }

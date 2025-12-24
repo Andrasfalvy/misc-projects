@@ -2,6 +2,7 @@
   "name": "racer-positioning-algo",
   "displayName": "Racer Positioning Algorithm",
   "description": "A project to test out a positioning algorithm for racing cars, that handles splits",
+  "frontend": true,
   "private": true,
   "version": "0.1.0",
   "license": "LGPL-3.0-or-later",
@@ -10,7 +11,7 @@
     "url": "https://github.com/mrgazdag/misc-projects.git"
   },
   "scripts": {
-    "build": "webpack build",
+    "build_frontend": "webpack build",
     "watch": "webpack watch --mode development",
     "start": "tsx scripts/host.ts"
   }

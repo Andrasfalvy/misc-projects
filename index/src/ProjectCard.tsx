@@ -14,7 +14,7 @@ export default class ProjectCard extends Component<ProjectCardProps, ProjectCard
     }
 
     render() {
-        return <a href={"/" + this.props.project.id} className="project-card">
+        return <a href={"./" + this.props.project.id} className="project-card">
             <div className="_content">
                 <div className={"_image" + (this.state.loaded ? " _loaded" : "")}>
                     <img src={this.props.project.image} onLoad={()=>this.setState({loaded: true})} alt={this.props.project.name}/>

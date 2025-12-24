@@ -13,3 +13,6 @@ yarn-error.log*
 .vscode/*
 /.idea/
 /dist/
+/**/dist/
+
+/index/static/projects_prod.json

@@ -5,17 +5,40 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import * as fs from "node:fs";
 import {CleanWebpackPlugin} from "clean-webpack-plugin";
 
-export function webpackConfigPreset(root=false) {
-    let projectName = path.resolve('./').split(path.sep).pop();
+function getRootPath() {
+    let currentPath = path.resolve("./");
+
+    let maxDepth = currentPath.split(path.sep).length;
+    let rootPath = "./";
+    for (let i = 0; i < maxDepth; i++) {
+        if (fs.existsSync(path.resolve(currentPath, rootPath, ".misc-root"))) {
+            return rootPath;
+        }
+        rootPath += "../";
+    }
+    throw new Error("Could not find .misc-root in any parent directory of \"" + currentPath + "\".")
+}
+export function webpackConfigPreset(isRoot=false) {
     let packageJson = JSON.parse(fs.readFileSync(path.resolve(`./package.json`), {encoding: "utf-8"}));
+    let projectName = packageJson.name;
+    let isFrontend = packageJson.frontend;
+
+    let rootPath = getRootPath();
+    let commonPath = rootPath + "common/";
+    let distPath;
+    if (!isFrontend) {
+        distPath = "./dist/";
+    } else {
+        distPath = rootPath + "dist/" + (isRoot ? "" : projectName + "/");
+    }
     return defineConfig({
         mode: "production",
-        target: "web",
+        target: isFrontend ? "web" : "node",
 
         entry: "./src/index",
 
         output: {
-            path: path.resolve(root ? `../dist/` : `../../dist/${projectName}/`),
+            path: path.resolve(distPath),
             filename: `[name]-[contenthash].js`,
             assetModuleFilename: '[hash][ext][query]',
             publicPath: './',
@@ -78,36 +101,33 @@ export function webpackConfigPreset(root=false) {
             ]
         },
 
-        plugins: root ? [
-            new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin({
-                template: "../common/index.html",
+        plugins: (()=>{
+            /** @type any[] */
+            let plugins = [
+                new CleanWebpackPlugin()
+            ];
+            if (!isFrontend) return plugins;
+
+            plugins.push(new HtmlWebpackPlugin({
+                template: commonPath + "index.html",
                 publicPath: `./`,
                 templateParameters: {
-                    title: "Fun Projects",
+                    title: isRoot ? "Fun Projects" : packageJson.displayName,
                 },
                 filename: "./index.html",
                 //favicon: "../../common/favicon.ico"
-            }),
-        ] : [
-            new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin({
-                template: "../../common/index.html",
-                templateParameters: {
-                    title: packageJson.displayName,
-                },
-                publicPath: `./`,
-                filename: "./index.html",
-                //favicon: "../../common/favicon.ico"
-            }),
-            new CopyWebpackPlugin({
+            }))
+            if (isRoot) return plugins;
+
+            plugins.push(new CopyWebpackPlugin({
                 patterns: [
                     {
                         from: "./thumbnail.png",
                         to: "./thumbnail.png"
                     }
                 ]
-            })
-        ]
+            }));
+            return plugins;
+        })()
     });
 }
