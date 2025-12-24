@@ -99,10 +99,10 @@ export default class Game {
         return this.currentQuestion;
     }
 
-    broadcastPacket<K extends keyof GameS2CPackets>(packet: GameS2CPackets[K], filter?: GamePlayer) {
+    broadcastPacket<K extends keyof GameS2CPackets>(packet: GameS2CPackets[K], exclude?: GamePlayer) {
         if (!this.active) return;
         for (let player of this.lobby.getPlayers().values()) {
-            if (filter && filter.getLobbyPlayer() !== player) continue;
+            if (exclude && exclude.getLobbyPlayer() === player) continue;
             player.getClient()?.sendPacket(packet);
         }
     }

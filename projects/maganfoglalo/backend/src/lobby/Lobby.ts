@@ -69,9 +69,9 @@ export default class Lobby {
         this.sendLobbyInitPacket(player);
     }
 
-    broadcastPacket<K extends keyof LobbyS2CPackets>(packet: LobbyS2CPackets[K], filter?: LobbyPlayer) {
+    broadcastPacket<K extends keyof LobbyS2CPackets>(packet: LobbyS2CPackets[K], exclude?: LobbyPlayer) {
         for (let player of this.players.values()) {
-            if (filter && filter !== player) continue;
+            if (exclude && exclude === player) continue;
             player.sendPacket(packet);
         }
     }

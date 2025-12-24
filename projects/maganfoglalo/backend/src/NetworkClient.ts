@@ -23,7 +23,7 @@ export default class NetworkClient {
         };
         this.socket.onclose = ()=>{
             if (this.disconnected) return;
-
+            console.log("client disconnected");
             this.disconnected = true;
             this.disconnectHandler();
         }
@@ -40,7 +40,7 @@ export default class NetworkClient {
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(()=>{
             this.disconnect();
-        }, 10_000);
+        }, 1000_000_000);
     }
 
     sendPacket(packet: any) {

@@ -4,6 +4,15 @@ import * as readline from "node:readline";
     let ws = new WebSocket("ws://localhost:4000/ws");
     ws.onmessage = e=>console.log(e.data);
 
+    ws.onerror = e=>{
+        console.error(e);
+        process.exit(1);
+    };
+    ws.onclose = ()=>{
+        console.log("connection closed");
+        process.exit(0);
+    };
+
     console.log("connecting...");
     await new Promise(r=>ws.onopen = r);
     console.log("connected");
