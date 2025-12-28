@@ -1,5 +1,4 @@
 import {GLBuffer, GLRenderer} from "@mrgazdag/gl-lite";
-import RawGameData from "./data/RawGameData";
 import AbstractComponent from "./components/AbstractComponent";
 import GameData from "./data/GameData";
 import BackgroundComponent from "./components/BackgroundComponent";
@@ -25,13 +24,18 @@ export default class F1Renderer {
     }
     private mode: ChangeableProperty<number>;
     private raceIndex: ChangeableProperty<number>;
+
+    private rawGameData: string;
     private gameData: GameData;
+
     private recording: boolean;
 
     private allComponents: AbstractComponent[];
+    constructor(rawGameData: string) {
+        let json = JSON.parse(rawGameData);
+        this.gameData = new GameData(json);
+        this.rawGameData = rawGameData;
 
-    constructor(gameData: RawGameData) {
-        this.gameData = new GameData(gameData);
         this.startTime = (Date.now()/1000) * F1Renderer.timeMultiplier;
         this.initData = undefined;
 
@@ -51,6 +55,23 @@ export default class F1Renderer {
 
     reset() {
         this.startTime = (Date.now()/1000) * F1Renderer.timeMultiplier;
+    }
+
+    async setRawData(raw: string) {
+        let json = JSON.parse(raw);
+        let newGameData = new GameData(json);
+        await newGameData.init();
+
+        for (let allComponent of this.allComponents) {
+            allComponent.performDispose();
+        }
+
+        this.gameData = newGameData;
+        this.rawGameData = raw;
+    }
+
+    getRawGameData() {
+        return this.rawGameData;
     }
 
     async record(context: RenderContext<WebGL2RenderingContext>, seconds: number, fps: number) {

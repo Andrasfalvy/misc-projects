@@ -2,7 +2,6 @@ import {createRoot} from "react-dom/client";
 import React, {StrictMode} from "react";
 import App from "./App";
 import F1Renderer from "./api/F1Renderer";
-import RawGameData from "./api/data/RawGameData";
 import Formula1Regular from "./fonts/Formula1-Regular.otf";
 import Formula1Bold from "./fonts/Formula1-Bold_mod.otf";
 import TextRenderer from "./api/TextRenderer";
@@ -18,9 +17,9 @@ import gameData from "./game_data_season1.json";
     })));
     (window as any)["TextRenderer"] = TextRenderer;
 
-    let data: RawGameData = gameData as any;
+    let rawGameData = JSON.stringify(gameData as any, null, 4);
 
-    let f1 = new F1Renderer(data);
+    let f1 = new F1Renderer(rawGameData);
     await f1.getGameData().init();
     const root = createRoot(document.getElementById("root")!);
     root.render(

@@ -3,7 +3,6 @@ import headerVsh from "./HeaderComponent.vsh";
 import headerFsh from "./HeaderComponent.fsh";
 import AbstractComponent from "./AbstractComponent";
 import {ComponentContext} from "../F1Renderer";
-import TextRenderer from "../TextRenderer";
 import ChangeableProperty from "../ChangeableProperty";
 import TextureUtils from "../TextRenderer";
 export default class HeaderComponent extends AbstractComponent {
@@ -136,6 +135,10 @@ export default class HeaderComponent extends AbstractComponent {
     dispose() {
         this.program.dispose();
         this.pageTitleComponent?.dispose();
+        for (let texture of this.textureCacheMap.values()) {
+            texture.dispose();
+        }
+        this.textureCacheMap.clear();
     }
 }
 interface InterpolatedImageProps {

@@ -112,6 +112,10 @@ export default class PodiumComponent extends AbstractComponent {
 
     dispose() {
         this.program.dispose();
+        for (let texture of this.textureCacheMap.values()) {
+            texture.dispose();
+        }
+        this.textureCacheMap.clear();
     }
 }
 const Positions = [

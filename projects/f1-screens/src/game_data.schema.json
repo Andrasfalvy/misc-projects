@@ -1,0 +1,158 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/schemas/raw-game-data.schema.json",
+    "title": "RawGameData",
+    "type": "object",
+    "required": [
+        "teamData",
+        "drivers",
+        "raceResults",
+        "reserveIconUrl",
+        "pointMap",
+        "name"
+    ],
+    "properties": {
+        "teamData": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/RawTeamData" }
+        },
+        "drivers": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/RawDriverData" }
+        },
+        "raceResults": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/RawRaceData" }
+        },
+        "reserveIconUrl": {
+            "type": "string",
+            "format": "uri"
+        },
+        "pointMap": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "number"
+            }
+        },
+        "name": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+
+    "$defs": {
+        "RawRaceData": {
+            "type": "object",
+            "required": ["map", "mapFlag", "lapCount", "date", "results"],
+            "properties": {
+                "map": { "type": "string" },
+                "mapFlag": { "type": "string" },
+                "lapCount": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "results": {
+                    "anyOf": [
+                        { "$ref": "#/$defs/RawRaceResultsData" },
+                        { "type": "null" }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+
+        "RawRaceResultsData": {
+            "type": "object",
+            "required": ["driverData"],
+            "properties": {
+                "driverData": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "playerId",
+                            "teamId",
+                            "startingPosition",
+                            "numberOfPitStops",
+                            "bestLapTime",
+                            "time",
+                            "timeType",
+                            "penaltyTime"
+                        ],
+                        "properties": {
+                            "playerId": { "type": "string" },
+                            "teamId": { "type": "string" },
+
+                            "startingPosition": {
+                                "type": ["integer", "null"]
+                            },
+                            "numberOfPitStops": {
+                                "type": ["integer", "null"]
+                            },
+                            "bestLapTime": {
+                                "type": ["number", "null"]
+                            },
+
+                            "time": {
+                                "type": ["number", "null"]
+                            },
+                            "timeType": {
+                                "type": "string",
+                                "enum": [
+                                    "finish",
+                                    "from_leader",
+                                    "lapped",
+                                    "did_not_finish",
+                                    "did_not_start",
+                                    "disqualified"
+                                ]
+                            },
+                            "penaltyTime": {
+                                "type": "number",
+                                "minimum": 0
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+
+        "RawTeamData": {
+            "type": "object",
+            "required": ["id", "name", "iconUrl"],
+            "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "iconUrl": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "additionalProperties": false
+        },
+
+        "RawDriverData": {
+            "type": "object",
+            "required": ["id", "teamId", "name", "country", "iconUrl"],
+            "properties": {
+                "id": { "type": "string" },
+                "teamId": {
+                    "type": ["string", "null"]
+                },
+                "name": { "type": "string" },
+                "country": { "type": "string" },
+                "iconUrl": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

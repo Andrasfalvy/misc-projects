@@ -273,13 +273,12 @@ export default class CalendarComponent extends AbstractComponent {
 
     dispose() {
         this.program.dispose();
+        for (let texture of this.textureCacheMap.values()) {
+            texture.dispose();
+        }
+        this.textureCacheMap.clear();
     }
 }
-const Positions = [
-    "1st",
-    "2nd",
-    "3rd",
-]
 interface InterpolatedImageProps {
     time: number;
     screen: [number, number];
