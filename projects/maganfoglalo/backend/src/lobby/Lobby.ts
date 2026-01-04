@@ -1,10 +1,10 @@
 import LobbyPlayer from "./LobbyPlayer";
 import {LobbyS2CPackets} from "../../../common/LobbyPackets";
-import NetworkClient from "../NetworkClient";
 import Utils from "../../../common/Utils";
 import MaganfoglaloBackend from "../MaganfoglaloBackend";
 import Game from "../game/Game";
 import PlayerRole from "../../../common/PlayerRole";
+import WSClient from "../../../common/WSClient";
 
 export default class Lobby {
     private readonly backend: MaganfoglaloBackend;
@@ -37,7 +37,7 @@ export default class Lobby {
         });
     }
 
-    connectNewPlayer(client: NetworkClient, name: string) {
+    connectNewPlayer(client: WSClient, name: string) {
         if (this.autoCloseTimeout) {
             clearTimeout(this.autoCloseTimeout);
             this.autoCloseTimeout = null;
@@ -60,7 +60,7 @@ export default class Lobby {
 
         return player;
     }
-    connectExistingPlayer(client: NetworkClient, id: string, key: string) {
+    connectExistingPlayer(client: WSClient, id: string, key: string) {
         let player = this.players.get(id);
         if (!player) throw new Error("Unknown player");
         if (player.getSecret() !== key) throw new Error("Invalid key");

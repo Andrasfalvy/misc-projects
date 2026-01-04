@@ -1,8 +1,7 @@
-import WebSocket from "ws";
-export default class NetworkClient {
+export default class WSClient {
     private socket: WebSocket;
     private packetHandler: PacketHandler;
-    private timeout!: NodeJS.Timeout;
+    private timeout!: ReturnType<typeof globalThis["setTimeout"]>;
 
     private disconnected: boolean;
     private disconnectHandler: ()=>void;

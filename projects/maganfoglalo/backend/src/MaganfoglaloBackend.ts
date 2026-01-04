@@ -1,8 +1,8 @@
-import NetworkClient from "./NetworkClient";
 import Lobby from "./lobby/Lobby";
 import Utils from "../../common/Utils";
 import WebSocket from "ws";
 import {LoginC2SHelloPacket} from "../../common/LoginPackets";
+import WSClient from "../../common/WSClient";
 
 export default class MaganfoglaloBackend {
     private lobbies: Map<string, Lobby>;
@@ -29,7 +29,7 @@ export default class MaganfoglaloBackend {
     }
     public handleClient(ws: WebSocket) {
         console.log("some client connected");
-        let client = new NetworkClient(ws, (e: LoginC2SHelloPacket)=>{
+        let client = new WSClient(ws as any, (e: LoginC2SHelloPacket)=>{
             console.log("hello? ", e);
             if (e.type === "hello") {
                 let lobbyKey = e.key;

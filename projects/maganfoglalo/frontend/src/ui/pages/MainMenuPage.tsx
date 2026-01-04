@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import "../../GameRenderer.scss";
-import MaganFoglaloApi from "../../api/MaganFoglalo";
+import MaganFoglaloApi from "../../api/MaganFoglaloClient";
 
 export default class MainMenuPage extends Component<MainMenuProps> {
     constructor(props: MainMenuProps) {

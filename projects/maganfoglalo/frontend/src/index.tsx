@@ -1,9 +1,9 @@
 import {createRoot} from "react-dom/client";
 import React, {StrictMode} from "react";
 import App from "./ui/App";
-import MaganFoglalo from "./api/MaganFoglalo";
+import MaganFoglaloClient from "./api/MaganFoglaloClient";
 
-let api = new MaganFoglalo();
+let api = new MaganFoglaloClient();
 (window as any)["api"] = api;
 
 const root = createRoot(document.getElementById("root")!);

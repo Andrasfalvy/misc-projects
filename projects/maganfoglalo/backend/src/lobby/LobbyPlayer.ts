@@ -1,9 +1,9 @@
-import NetworkClient from "../NetworkClient";
 import TeamColor from "../../../common/TeamColor";
 import PlayerRole from "../../../common/PlayerRole";
 import Utils from "../../../common/Utils";
 import Lobby from "./Lobby";
 import {LobbyC2SPacket, LobbyS2CPacket, LobbyS2CPackets, RawPlayerData} from "../../../common/LobbyPackets";
+import WSClient from "../../../common/WSClient";
 
 export default class LobbyPlayer {
     private readonly lobby: Lobby;
@@ -22,7 +22,7 @@ export default class LobbyPlayer {
      * Can be null if the player is not connected.
      * Can reconnect with the secret.
      */
-    private client: NetworkClient | null;
+    private client: WSClient | null;
 
     // Self assigned
     private name: string;
@@ -34,7 +34,7 @@ export default class LobbyPlayer {
 
     private active: boolean;
     private customPacketHandler: ((e: any)=>boolean) | null;
-    constructor(lobby: Lobby, id: string, client: NetworkClient, name: string) {
+    constructor(lobby: Lobby, id: string, client: WSClient, name: string) {
         this.lobby = lobby;
         this.id = id;
 
@@ -50,7 +50,7 @@ export default class LobbyPlayer {
         this.customPacketHandler = null;
         this.handleClient(client);
     }
-    private handleClient(client: NetworkClient) {
+    private handleClient(client: WSClient) {
         console.log("Player connected: ", this.name);
         client.setDisconnectHandler(()=>{
             this.client = null;
@@ -110,7 +110,7 @@ export default class LobbyPlayer {
     getClient() {
         return this.client;
     }
-    setClient(client: NetworkClient) {
+    setClient(client: WSClient) {
         if (this.client !== null) {
             this.client.disconnect();
         }

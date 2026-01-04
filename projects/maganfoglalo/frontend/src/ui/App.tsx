@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import "./App.scss";
-import MaganFoglalo from "../api/MaganFoglalo";
+import MaganFoglaloClient from "../api/MaganFoglaloClient";
 import LobbyPage from "./pages/LobbyPage";
 import MainMenuPage from "./pages/MainMenuPage";
 
@@ -16,5 +16,5 @@ export default class App extends Component<AppProps> {
     }
 }
 interface AppProps {
-    api: MaganFoglalo
+    api: MaganFoglaloClient
 }
