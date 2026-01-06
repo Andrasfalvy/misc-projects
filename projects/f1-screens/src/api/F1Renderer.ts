@@ -32,9 +32,9 @@ export default class F1Renderer {
 
     private allComponents: AbstractComponent[];
     constructor(rawGameData: string) {
+        this.rawGameData = rawGameData;
         let json = JSON.parse(rawGameData);
         this.gameData = new GameData(json);
-        this.rawGameData = rawGameData;
 
         this.startTime = (Date.now()/1000) * F1Renderer.timeMultiplier;
         this.initData = undefined;
@@ -58,6 +58,7 @@ export default class F1Renderer {
     }
 
     async setRawData(raw: string) {
+        this.rawGameData = raw;
         let json = JSON.parse(raw);
         let newGameData = new GameData(json);
         await newGameData.init();
@@ -67,14 +68,13 @@ export default class F1Renderer {
         }
 
         this.gameData = newGameData;
-        this.rawGameData = raw;
     }
 
     getRawGameData() {
         return this.rawGameData;
     }
 
-    async record(context: RenderContext<WebGL2RenderingContext>, seconds: number, fps: number) {
+    async record(context: RenderContext<WebGL2RenderingContext>, options: RecordOptions) {
         for (let allComponent of this.allComponents) {
             allComponent.performDispose();
         }
@@ -87,12 +87,12 @@ export default class F1Renderer {
             this.startTime = start;
             this.mode.overwrite(5);
             this.raceIndex.overwrite(-1);
-            let totalFrames = seconds * fps;
-            let frameTime = 1/fps;
+            let totalFrames = options.seconds * options.fps;
+            let frameTime = 1/options.fps;
 
             for (let i = 0; i < totalFrames; i++) {
                 let time = start + i * frameTime;
-                console.log("rendering frame", i, "/", totalFrames, "   ", time, "/", seconds);
+                console.log("rendering frame", i, "/", totalFrames, "   ", time, "/", options.seconds);
                 this.render(context, time);
                 let canvas = context.ctx.canvas as HTMLCanvasElement;
                 let blob = await new Promise<Blob>((res,rej)=>{
@@ -229,4 +229,10 @@ export interface ComponentContext {
         now: number,
         delta: number
     }
+}
+export interface RecordOptions {
+    width: number,
+    height: number,
+    fps: number,
+    seconds: number
 }
