@@ -77,6 +77,7 @@ export default class App extends Component<AppProps, AppState> {
                         className="_game_data_editor"
                         height="auto"
                         defaultValue={this.props.app.getRawGameData()}
+                        theme="vs-dark"
                         path="game_data.json"
                         onMount={(editor, monaco: typeof monaco_editor)=>{
                             monaco.json.jsonDefaults.setDiagnosticsOptions({
@@ -117,7 +118,12 @@ export default class App extends Component<AppProps, AppState> {
                 depth: false
             }} renderFunc={async (ctx)=>{
                 if (this.recording) {
-                    await this.props.app.record(ctx, 20, 60);
+                    await this.props.app.record(ctx, {
+                        width: 1080,
+                        height: 1080,
+                        seconds: 20,
+                        fps: 60
+                    });
                     this.recording = false;
                 }
                 if (!this.props.app.isRecording()) {
