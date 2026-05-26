@@ -373,7 +373,7 @@
                         "teamId": "mercedes",
                         "startingPosition": 3,
                         "numberOfPitStops": 4,
-                        "bestLapTime": 30.449,
+                        "bestLapTime": 90.449,
                         "time": 72.333,
                         "timeType": "from_leader",
                         "penaltyTime": 0
@@ -770,7 +770,7 @@
                     },
                     {
                         "playerId": "tapatio",
-                        "teamId": "redbull",
+                        "teamId": "racing_bulls",
                         "startingPosition": 8,
                         "numberOfPitStops": 4,
                         "bestLapTime": 111.74,
